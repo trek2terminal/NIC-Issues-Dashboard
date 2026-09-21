@@ -643,12 +643,31 @@
     .gauge div {
       position: absolute;
       z-index: 1;
-      inset: 52px 0;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
       text-align: center;
     }
 
     .gauge b {
+      color: var(--ref-text);
+      font-family: 'Space Grotesk', Arial, sans-serif;
       font-size: 21px;
+      line-height: 1;
+    }
+
+    .gauge small {
+      display: block;
+      max-width: 110px;
+      overflow: hidden;
+      color: var(--ref-muted);
+      font-size: 9px;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .legend {
@@ -1230,6 +1249,42 @@
       position: relative;
       min-height: 58px;
       align-items: center;
+      max-height: 86px;
+      overflow: hidden;
+      transition: max-height .6s cubic-bezier(.2, .8, .2, 1), opacity .45s ease, transform .6s cubic-bezier(.2, .8, .2, 1), padding .6s ease, border-color .45s ease;
+    }
+
+    .dashboard .upload.is-settled {
+      max-height: 4px;
+      min-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom-color: transparent;
+      opacity: .18;
+      transform: translateY(-10px);
+      cursor: pointer;
+    }
+
+    .dashboard .upload.is-settled:hover,
+    .dashboard .upload.is-settled:focus-within {
+      max-height: 86px;
+      min-height: 58px;
+      padding-top: 13px;
+      padding-bottom: 13px;
+      border-bottom-color: var(--ref-border);
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .dashboard .upload.is-settled:not(:hover):not(:focus-within) {
+      max-height: 4px;
+      min-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom-color: transparent;
+      opacity: .18;
+      transform: translateY(-10px);
     }
 
     .dashboard .upload::before {
@@ -1268,6 +1323,68 @@
       border: 1px solid var(--ref-border);
       background: var(--ref-surface2);
       color: var(--ref-text2);
+    }
+
+    .dashboard-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 0 2px;
+    }
+
+    .dashboard-heading .eyebrow {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .dashboard-heading h2 {
+      margin: 0;
+      color: var(--ref-text);
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: clamp(20px, 2.2vw, 28px);
+      letter-spacing: -.035em;
+    }
+
+    .dashboard-heading p {
+      max-width: 650px;
+      margin: 6px 0 0;
+      color: var(--ref-muted);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      flex: none;
+      padding: 7px 10px;
+      border: 1px solid color-mix(in srgb, var(--ref-teal) 28%, var(--ref-border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ref-teal) 7%, var(--ref-surface));
+      color: var(--ref-text2);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .live-indicator i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ref-teal);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ref-teal) 14%, transparent);
+    }
+
+    .file-chip,
+    .theme-toggle {
+      transition: transform var(--ref-transition), border-color var(--ref-transition), background var(--ref-transition), color var(--ref-transition), box-shadow var(--ref-transition);
+    }
+
+    .file-chip:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--ref-blue) 36%, var(--ref-border));
+      box-shadow: var(--ref-shadow2);
     }
 
     .cards {
@@ -1358,6 +1475,170 @@
       height: 3px;
       border-radius: 99px;
       background: linear-gradient(90deg, var(--ref-blue), var(--ref-teal));
+    }
+
+    .chart-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .chart-panel-head h2 {
+      margin-bottom: 0;
+    }
+
+    .chart-cycle-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chart-cycle-button {
+      min-height: 25px;
+      padding: 4px 7px;
+      border: 1px solid var(--ref-border);
+      border-radius: 6px;
+      background: var(--ref-surface2);
+      color: var(--ref-muted);
+      cursor: pointer;
+      font-size: 9px;
+      font-weight: 700;
+      transition: background var(--ref-transition), border-color var(--ref-transition), color var(--ref-transition), transform var(--ref-transition);
+    }
+
+    .chart-cycle-button:hover {
+      transform: translateY(-1px);
+      border-color: var(--ref-blue);
+      color: var(--ref-text);
+    }
+
+    .chart-cycle-button:focus-visible {
+      outline: 2px solid var(--ref-blue);
+      outline-offset: 2px;
+    }
+
+    .chart-cycle-button.is-active {
+      border-color: var(--ref-blue);
+      background: color-mix(in srgb, var(--ref-blue) 12%, var(--ref-surface2));
+      color: var(--ref-blue);
+    }
+
+    .chart-cycle-button.auto.is-active {
+      border-color: color-mix(in srgb, var(--ref-teal) 45%, var(--ref-border));
+      background: color-mix(in srgb, var(--ref-teal) 10%, var(--ref-surface2));
+      color: var(--ref-teal);
+    }
+
+    .classification-stage {
+      position: relative;
+      height: 220px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .classification-view {
+      position: absolute;
+      inset: 0;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(10px) scale(.98);
+      transition: opacity .65s cubic-bezier(.2, .8, .2, 1), transform .65s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .65s;
+    }
+
+    .classification-view.is-active {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition-delay: 0s;
+    }
+
+    .classification-stage .bars {
+      height: 220px;
+      margin: 0;
+    }
+
+    .classification-donut-view {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 4px 12px 12px;
+    }
+
+    .classification-donut {
+      width: 154px;
+      height: 154px;
+      flex: none;
+      border-radius: 50%;
+      background: conic-gradient(#a6b0bd 0 100%);
+      box-shadow: 0 10px 24px rgba(18, 109, 222, .1);
+      position: relative;
+      animation: chartReveal .7s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .classification-donut::after {
+      content: '';
+      position: absolute;
+      inset: 37px;
+      border-radius: 50%;
+      background: var(--ref-surface);
+    }
+
+    .classification-donut-view .legend {
+      max-width: 190px;
+      justify-content: flex-start;
+      align-content: center;
+      margin: 0;
+      font-size: 9px;
+      line-height: 1.35;
+    }
+
+    .classification-donut-view .legend span {
+      display: block;
+      width: 100%;
+    }
+
+    .status-stage {
+      position: relative;
+      height: 220px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .status-chart-view {
+      position: absolute;
+      inset: 0;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(10px) scale(.98);
+      transition: opacity .65s cubic-bezier(.2, .8, .2, 1), transform .65s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .65s;
+    }
+
+    .status-chart-view.is-active {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition-delay: 0s;
+    }
+
+    .status-stage .donut {
+      margin: 20px auto;
+    }
+
+    .status-stage .bars {
+      height: 220px;
+      margin: 0;
+    }
+
+    .status-stage .bc span {
+      font-size: 10px;
+    }
+
+    .status-stage + .legend {
+      margin-top: 8px;
     }
 
     .donut,
@@ -1521,6 +1802,63 @@
         animation: none !important;
       }
     }
+
+    @media (max-width: 700px) {
+      .dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-top: 17px;
+      }
+
+      .live-indicator {
+        font-size: 9px;
+      }
+
+      .chart-panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .chart-cycle-controls {
+        justify-content: flex-start;
+      }
+
+      .classification-stage {
+        height: 205px;
+      }
+
+      .classification-stage .bars {
+        height: 205px;
+      }
+
+      .classification-donut {
+        width: 132px;
+        height: 132px;
+      }
+
+      .classification-donut::after {
+        inset: 32px;
+      }
+
+      .classification-donut-view {
+        gap: 10px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .classification-donut-view .legend {
+        max-width: 150px;
+        font-size: 8px;
+      }
+
+      .status-stage {
+        height: 205px;
+      }
+
+      .status-stage .bars {
+        height: 205px;
+      }
+    }
   </style>
 </head>
 
@@ -1587,6 +1925,15 @@
 
   <main class="wrap">
 
+    <section class="dashboard-heading" aria-labelledby="operationsHeading">
+      <div>
+        <span class="eyebrow">Management view</span>
+        <h2 id="operationsHeading">Field operations overview</h2>
+        <p>Monitor reported NIC installation issues, resolution progress, and the work still requiring field attention.</p>
+      </div>
+      <span class="live-indicator"><i></i> Workbook view is live</span>
+    </section>
+
     <section class="cards">
       <div class="card b"><b id="kpiRaised">0</b><span>Issues Reported</span><small>Total issues reported by the field team</small></div>
       <div class="card g"><b id="kpiResolved">0</b><span>Issues Resolved</span><small>Total issues marked as resolved</small></div>
@@ -1598,15 +1945,38 @@
     <section class="grid">
 
       <article class="box">
-        <h2>Issue Resolution Status</h2>
-        <div id="donut" class="donut"></div>
+        <div class="chart-panel-head">
+          <h2>Issue Resolution Status</h2>
+          <div class="chart-cycle-controls" aria-label="Issue status chart controls">
+            <button class="chart-cycle-button is-active" type="button" data-status-chart-view="donut">Donut</button>
+            <button class="chart-cycle-button" type="button" data-status-chart-view="bars">Bars</button>
+          </div>
+        </div>
+        <div class="status-stage">
+          <div id="donut" class="donut status-chart-view is-active"></div>
+          <div id="statusBarsView" class="bars status-chart-view">
+            <p class="empty">Upload an Excel workbook.</p>
+          </div>
+        </div>
         <div id="donutLegend" class="legend"></div>
       </article>
 
       <article class="box">
-        <h2>Issues by Category</h2>
-        <div id="bars" class="bars">
-          <p class="empty">Upload an Excel workbook.</p>
+        <div class="chart-panel-head">
+          <h2>Issues by Category</h2>
+          <div class="chart-cycle-controls" aria-label="Category chart controls">
+            <button class="chart-cycle-button is-active" type="button" data-classification-view="bars">Bars</button>
+            <button class="chart-cycle-button" type="button" data-classification-view="donut">Donut</button>
+          </div>
+        </div>
+        <div class="classification-stage">
+          <div id="bars" class="bars classification-view is-active">
+            <p class="empty">Upload an Excel workbook.</p>
+          </div>
+          <div id="classificationDonutView" class="classification-view classification-donut-view">
+            <div id="classificationDonut" class="classification-donut"></div>
+            <div id="classificationLegend" class="legend"></div>
+          </div>
         </div>
       </article>
 
@@ -1693,6 +2063,9 @@
     let allRows = [];        // full parsed dataset (one object per excel row)
     let filteredRows = [];   // rows after search + status filter
     let currentPage = 1;
+    let uploadBarTimer = null;
+    let classificationChartTimer = null;
+    let statusChartTimer = null;
     const PAGE_SIZE = 10;
 
     // The exact column headers used in the source workbook.
@@ -1924,10 +2297,13 @@
         populateStatusFilter();
         currentPage = 1;
         document.body.classList.add('loaded');
+        el('dashboardUpload').classList.remove('is-settled');
         setLoadStep('ready', 100, 'Dashboard ready', 'Field installation issues are ready to review.');
         render();
         await new Promise(resolve => setTimeout(resolve, 220));
         hideLoading();
+        clearTimeout(uploadBarTimer);
+        uploadBarTimer = setTimeout(() => el('dashboardUpload').classList.add('is-settled'), 2800);
         showToast('Workbook ready', `${formatNumber(allRows.length)} field records are ready to review.`);
       } catch (error) {
         hideLoading();
@@ -1947,6 +2323,14 @@
       fileInput.value = '';
       el('headerFileName').textContent = 'No workbook loaded';
       el('headerFileChip').style.display = 'none';
+      clearTimeout(uploadBarTimer);
+      clearInterval(classificationChartTimer);
+      classificationChartTimer = null;
+      clearInterval(statusChartTimer);
+      statusChartTimer = null;
+      setClassificationChartView('bars');
+      setStatusChartView('donut');
+      el('dashboardUpload').classList.remove('is-settled');
       document.body.classList.remove('loaded');
       render();
     }
@@ -2007,6 +2391,22 @@
         .filter(bucket => counts[bucket])
         .map(bucket => `<span><i style="background:${STATUS_COLORS[bucket]}"></i>${labels[bucket]} (${counts[bucket]})</span>`)
         .join('');
+
+      renderStatusBars(counts, labels);
+    }
+
+    function renderStatusBars(counts, labels) {
+      const entries = Object.keys(counts).filter(bucket => counts[bucket]);
+      const maxCount = Math.max(...entries.map(bucket => counts[bucket]), 1);
+      el('statusBarsView').innerHTML = entries.length
+        ? entries.map(bucket => `
+            <div class="bc">
+              <em>${counts[bucket]}</em>
+              <div class="bar" style="height:${(counts[bucket] / maxCount) * 100}%;background:${STATUS_COLORS[bucket]}" ></div>
+              <span>${labels[bucket]}</span>
+            </div>
+          `).join('')
+        : '<p class="empty">Upload an Excel workbook.</p>';
     }
 
     // ---------------------------------------------------------------
@@ -2035,6 +2435,8 @@
 
       if (!topEntries.length) {
         el('bars').innerHTML = '<p class="empty">Upload an Excel workbook.</p>';
+        el('classificationDonut').style.background = 'conic-gradient(#a6b0bd 0 100%)';
+        el('classificationLegend').innerHTML = '<span>No category data yet</span>';
         return;
       }
 
@@ -2047,6 +2449,66 @@
           <span>${label}</span>
         </div>
       `).join('');
+
+      renderClassificationDonut(counts);
+    }
+
+    function renderClassificationDonut(counts) {
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const visibleEntries = entries.slice(0, 7);
+      const otherCount = entries.slice(7).reduce((sum, [, count]) => sum + count, 0);
+      if (otherCount) visibleEntries.push(['Other categories', otherCount]);
+
+      const total = visibleEntries.reduce((sum, [, count]) => sum + count, 0) || 1;
+      let cursor = 0;
+      const segments = visibleEntries.map(([label, count], index) => {
+        const end = cursor + (count / total) * 100;
+        const color = CLASSIFICATION_COLORS[index % CLASSIFICATION_COLORS.length];
+        const segment = `${color} ${cursor}% ${end}%`;
+        cursor = end;
+        return { label, count, color, segment };
+      });
+
+      el('classificationDonut').style.background = `conic-gradient(${segments.map(item => item.segment).join(', ')})`;
+      el('classificationLegend').innerHTML = segments.map(item =>
+        `<span><i style="background:${item.color}"></i>${item.label} (${item.count})</span>`
+      ).join('');
+    }
+
+    function setClassificationChartView(view) {
+      const showDonut = view === 'donut';
+      el('bars').classList.toggle('is-active', !showDonut);
+      el('classificationDonutView').classList.toggle('is-active', showDonut);
+      document.querySelectorAll('[data-classification-view]').forEach(button => {
+        button.classList.toggle('is-active', button.dataset.classificationView === view);
+      });
+    }
+
+    function startClassificationChartRotation(view) {
+      clearInterval(classificationChartTimer);
+      if (view) setClassificationChartView(view);
+      classificationChartTimer = setInterval(() => {
+        const nextView = el('classificationDonutView').classList.contains('is-active') ? 'bars' : 'donut';
+        setClassificationChartView(nextView);
+      }, 10000);
+    }
+
+    function setStatusChartView(view) {
+      const showBars = view === 'bars';
+      el('donut').classList.toggle('is-active', !showBars);
+      el('statusBarsView').classList.toggle('is-active', showBars);
+      document.querySelectorAll('[data-status-chart-view]').forEach(button => {
+        button.classList.toggle('is-active', button.dataset.statusChartView === view);
+      });
+    }
+
+    function startStatusChartRotation(view) {
+      clearInterval(statusChartTimer);
+      if (view) setStatusChartView(view);
+      statusChartTimer = setInterval(() => {
+        const nextView = el('statusBarsView').classList.contains('is-active') ? 'donut' : 'bars';
+        setStatusChartView(nextView);
+      }, 10000);
     }
 
     // ---------------------------------------------------------------
@@ -2101,6 +2563,10 @@
       renderDonut();
       renderGauge(totalRaised, totalResolved);
       renderBars();
+      if (allRows.length) {
+        startStatusChartRotation('donut');
+        startClassificationChartRotation('bars');
+      }
       applyFilters();
     }
 
@@ -2166,6 +2632,20 @@
       }
     });
     el('reset').addEventListener('click', resetDashboard);
+    document.querySelectorAll('[data-classification-view]').forEach(button => {
+      button.addEventListener('click', () => {
+        const view = button.dataset.classificationView;
+        setClassificationChartView(view);
+        startClassificationChartRotation(view);
+      });
+    });
+    document.querySelectorAll('[data-status-chart-view]').forEach(button => {
+      button.addEventListener('click', () => {
+        const view = button.dataset.statusChartView;
+        setStatusChartView(view);
+        startStatusChartRotation(view);
+      });
+    });
     el('search').addEventListener('input', applyFilters);
     el('statusFilter').addEventListener('change', applyFilters);
     el('exportBtn').addEventListener('click', exportData);
