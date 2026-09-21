@@ -6,71 +6,277 @@
   <title>Installation Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      background: #f5f8fc;
-      color: #15243b;
-      font-family: Arial, Helvetica, sans-serif;
+      background: #eef3f6;
+      color: #172c3d;
+      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
       font-size: 13px;
+    }
+
+    body::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, #277cf0 0 72%, #a8d83e 72% 100%);
     }
 
     /* ---------- Header ---------- */
     .top {
-      height: 100px;
+      min-height: 58px;
       background: #ffffff;
       display: flex;
       align-items: center;
       gap: 24px;
-      padding: 0 28px;
-      border-bottom: 1px solid #dce5ef;
+      padding: 9px 32px;
+      border-bottom: 1px solid #dce7ef;
+      box-shadow: 0 3px 18px rgba(15, 43, 58, .06);
     }
 
     .logos {
       display: flex;
       align-items: center;
-      gap: 18px;
-      border-right: 1px solid #dce5ef;
-      padding-right: 22px;
+      border-right: 1px solid rgba(255, 255, 255, .2);
+      padding-right: 26px;
     }
 
     .logos img {
       display: block;
-      height: 40px;
+      height: 42px;
       width: auto;
+      border-radius: 5px;
+    }
+
+    .logos {
+      border-right: 0;
+      padding-right: 0;
     }
 
     .logos img.aradhana {
-      height: 46px;
+      display: none;
+    }
+
+    .dark-yitran-logo {
+      display: none;
+      height: 42px;
+      width: auto;
     }
 
     .title h1 {
       margin: 0;
-      font-size: 19px;
+      color: #173b66;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 16px;
+      letter-spacing: .1px;
     }
 
     .title p {
       margin: 4px 0;
-      color: #68778b;
-      font-size: 11px;
+      color: #71859b;
+      font-size: 9px;
     }
 
     /* ---------- Upload bar ---------- */
     .upload,
     .box {
-      max-width: 1450px;
-      margin: 15px auto;
+      width: calc(100% - 24px);
+      max-width: none;
+      margin: 18px auto;
       background: #ffffff;
-      border: 1px solid #dfe7ef;
+      border: 1px solid #dbe5e9;
+      border-radius: 10px;
+      box-shadow: 0 5px 18px rgba(37, 62, 74, .05);
+    }
+
+    .welcome {
+      width: calc(100% - 24px);
+      max-width: none;
+      margin: 18px auto 0;
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      gap: 14px;
+    }
+
+    .welcome-copy,
+    .welcome-upload {
+      min-height: 252px;
+      border: 1px solid #d8e6ef;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 8px 22px rgba(37, 62, 74, .06);
+    }
+
+    .welcome-copy {
+      position: relative;
+      overflow: hidden;
+      padding: 37px 24px 25px;
+      border-left: 4px solid #25a9df;
+      background: linear-gradient(120deg, #ffffff 0%, #f2f8fc 100%);
+    }
+
+    .welcome-copy::after {
+      content: '';
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      right: -12px;
+      top: -78px;
+      border: 26px solid rgba(52, 139, 223, .08);
+      border-radius: 50%;
+    }
+
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 8px;
+      color: #287fd5;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .welcome-copy h2 {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 0;
+      color: #16365f;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 31px;
+      line-height: 1.08;
+    }
+
+    .welcome-copy p {
+      position: relative;
+      z-index: 1;
+      max-width: 570px;
+      margin: 9px 0 14px;
+      color: #58738e;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .chips {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .chip {
+      padding: 5px 9px;
+      border: 1px solid #dce8f0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .72);
+      color: #57718b;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .chip::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: #2589dd;
+    }
+
+    .welcome-upload {
+      padding: 18px 16px 13px;
+    }
+
+    .welcome-upload h3 {
+      margin: 0;
+      color: #203e5f;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 13px;
+    }
+
+    .welcome-upload > p {
+      margin: 6px 0 11px;
+      color: #71869a;
+      font-size: 10px;
+    }
+
+    .upload-zone {
+      padding: 18px 12px;
+      border: 1px dashed #d5e3ed;
       border-radius: 9px;
+      background: #f9fbfd;
+      text-align: center;
+    }
+
+    .upload-zone .upload-icon {
+      color: #7a96b0;
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .upload-zone b {
+      margin-top: 7px;
+      color: #48637e;
+      font-size: 10px;
+    }
+
+    .upload-zone span {
+      color: #8095a9;
+      font-size: 9px;
+    }
+
+    .welcome-upload .btn {
+      margin-top: 8px;
+      padding: 8px 14px;
+      background: #1e69aa;
+      font-size: 10px;
+    }
+
+    .privacy-note {
+      margin: 9px 0 0;
+      color: #8295a5;
+      font-size: 9px;
+      text-align: center;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
+    body.loaded .welcome {
+      display: none;
+    }
+
+    body.loaded .dashboard {
+      display: block;
+    }
+
+    .dashboard-tools {
+      width: calc(100% - 24px);
+      max-width: none;
+      margin: 16px auto 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .dashboard-tools .btn {
+      padding: 8px 12px;
+      font-size: 11px;
     }
 
     .upload {
-      border: 2px dashed #a6d84f;
-      padding: 16px;
+      border: 1px dashed #9bbd44;
+      background: #fbfdf8;
+      padding: 17px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -79,7 +285,7 @@
     }
 
     .upload.drag {
-      background: #eaf5ff;
+      background: #edf8e0;
     }
 
     .upload b,
@@ -89,30 +295,36 @@
 
     .upload span {
       font-size: 11px;
-      color: #68778b;
+      color: #6b7d84;
       margin-top: 4px;
     }
 
     .filename {
       font-size: 11px;
-      color: #126bc2;
+      color: #157b7f;
       margin-top: 2px;
       word-break: break-all;
     }
 
     .btn {
       border: 0;
-      border-radius: 5px;
-      background: #087cf0;
+      border-radius: 6px;
+      background: #167b80;
       color: #ffffff;
-      padding: 10px 15px;
+      padding: 10px 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #0f6267;
+      transform: translateY(-1px);
     }
 
     .btn.secondary {
-      background: #eef4fb;
-      color: #126bc2;
+      background: #edf3f4;
+      color: #17676d;
     }
 
     .btn:disabled {
@@ -121,28 +333,31 @@
     }
 
     .wrap {
-      max-width: 1450px;
+      width: calc(100% - 24px);
+      max-width: none;
       margin: auto;
-      padding: 0 15px;
+      padding: 0 0 20px;
     }
 
     /* ---------- KPI cards ---------- */
     .cards {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
+      gap: 14px;
     }
 
     .card {
-      padding: 13px;
-      border-radius: 7px;
+      padding: 17px;
+      border-radius: 9px;
       position: relative;
       overflow: hidden;
+      border: 1px solid rgba(23, 44, 61, .06);
     }
 
     .card b {
       display: block;
-      font-size: 23px;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 27px;
     }
 
     .card span {
@@ -157,29 +372,32 @@
       opacity: .75;
     }
 
-    .b { background: #e8f4ff; color: #126bc2; }
-    .g { background: #e8fbf0; color: #119653; }
-    .p { background: #f1eaff; color: #7138e7; }
-    .o { background: #fff4df; color: #9c6107; }
-    .r { background: #ffe8f0; color: #bf185d; }
+    .b { background: #e4f4f5; color: #14777c; }
+    .g { background: #e8f5df; color: #4b8326; }
+    .p { background: #eaf0f5; color: #315d7a; }
+    .o { background: #fff1d8; color: #a26712; }
+    .r { background: #f9e7e3; color: #b04b37; }
 
     /* ---------- Chart grid ---------- */
     .grid {
       display: grid;
       grid-template-columns: 1fr 1.5fr .8fr;
-      gap: 12px;
-      margin-top: 12px;
+      gap: 14px;
+      margin-top: 14px;
     }
 
     .box {
       margin: 0;
-      padding: 12px;
+      padding: 18px;
       min-width: 0;
     }
 
     .box h2 {
       margin: 0 0 10px;
-      font-size: 14px;
+      color: #203e4d;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 15px;
+      letter-spacing: .1px;
     }
 
     .donut,
@@ -187,7 +405,7 @@
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      margin: 15px auto;
+      margin: 20px auto;
       position: relative;
       background: conic-gradient(#a6b0bd 0 0%);
     }
@@ -250,7 +468,7 @@
 
     .bar {
       width: 70%;
-      border-radius: 4px 4px 0 0;
+      border-radius: 5px 5px 0 0;
       transition: height .25s ease;
     }
 
@@ -275,7 +493,7 @@
     /* ---------- Details table ---------- */
     .details {
       margin-top: 12px;
-      margin-bottom: 25px;
+      margin-bottom: 10px;
     }
 
     .detailhead {
@@ -294,9 +512,10 @@
     }
 
     .search {
-      padding: 7px;
+      padding: 7px 9px;
       border: 1px solid #d8e2ec;
-      border-radius: 4px;
+      border-radius: 6px;
+      background: #fbfcfd;
     }
 
     .search input {
@@ -308,14 +527,16 @@
     select {
       padding: 8px 7px;
       border: 1px solid #d8e2ec;
-      border-radius: 4px;
+      border-radius: 6px;
       background: #fff;
       font-size: 12px;
     }
 
     .table {
       overflow: auto;
-      margin-top: 10px;
+      margin-top: 14px;
+      border: 1px solid #e4ebf2;
+      border-radius: 7px;
     }
 
     table {
@@ -335,7 +556,11 @@
     }
 
     th {
-      background: #f4f7fa;
+      background: #f1f6f7;
+      color: #49636d;
+      font-size: 10px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
       position: sticky;
       top: 0;
     }
@@ -365,7 +590,7 @@
     .pager button {
       border: 1px solid #d8e2ec;
       background: #fff;
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 5px 10px;
       cursor: pointer;
     }
@@ -389,6 +614,14 @@
       .grid {
         grid-template-columns: 1fr;
       }
+
+      .top {
+        padding: 18px 22px;
+      }
+
+      .welcome {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 600px) {
@@ -398,7 +631,32 @@
       }
 
       .top {
-        padding: 0 12px;
+        padding: 9px 12px;
+      }
+
+      .top {
+        min-height: 80px;
+      }
+
+      .logos {
+        padding-right: 14px;
+      }
+
+      .title h1 {
+        font-size: 18px;
+      }
+
+      .welcome-copy,
+      .welcome-upload {
+        min-height: auto;
+      }
+
+      .welcome-copy {
+        padding: 28px 18px 22px;
+      }
+
+      .welcome-copy h2 {
+        font-size: 25px;
       }
 
       .cards {
@@ -411,6 +669,270 @@
 
       .wrap {
         padding: 0 10px;
+      }
+    }
+
+
+    /* ---------- Reference theme system ---------- */
+    :root {
+      --ref-bg: #f3f7fb;
+      --ref-bg2: #edf3f8;
+      --ref-surface: #ffffff;
+      --ref-surface2: #f7fafc;
+      --ref-surface3: #e8f0f5;
+      --ref-text: #0d2c54;
+      --ref-text2: #41627f;
+      --ref-muted: #70869b;
+      --ref-border: #dce8f2;
+      --ref-border2: #e7eff5;
+      --ref-blue: #126dde;
+      --ref-blue2: #347fbd;
+      --ref-teal: #05a58b;
+      --ref-lime: #a8d83e;
+      --ref-shadow: 0 8px 24px rgba(24, 67, 105, .08);
+      --ref-shadow2: 0 5px 16px rgba(24, 67, 105, .06);
+      --ref-transition: 180ms cubic-bezier(.2, .8, .2, 1);
+    }
+
+    body {
+      background: var(--ref-bg);
+      color: var(--ref-text);
+      transition: background .25s ease, color .25s ease;
+    }
+
+    .top,
+    .upload,
+    .box,
+    .welcome-copy,
+    .welcome-upload {
+      border-color: var(--ref-border);
+      background: var(--ref-surface);
+      box-shadow: var(--ref-shadow2);
+      transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, color .25s ease;
+    }
+
+    .top {
+      border-bottom-color: var(--ref-border);
+    }
+
+    .title h1,
+    .welcome-copy h2,
+    .welcome-upload h3,
+    .box h2 {
+      color: var(--ref-text);
+    }
+
+    .title p,
+    .welcome-copy p,
+    .welcome-upload > p,
+    .privacy-note,
+    .upload span,
+    .empty {
+      color: var(--ref-muted);
+    }
+
+    .welcome-copy {
+      background: linear-gradient(120deg, var(--ref-surface) 0%, var(--ref-bg2) 100%);
+    }
+
+    .welcome-copy::after {
+      border-color: color-mix(in srgb, var(--ref-blue) 9%, transparent);
+    }
+
+    .eyebrow,
+    .filename {
+      color: var(--ref-blue);
+    }
+
+    .chip {
+      border-color: var(--ref-border);
+      background: color-mix(in srgb, var(--ref-surface) 72%, transparent);
+      color: var(--ref-text2);
+    }
+
+    .chip::before {
+      background: var(--ref-blue);
+    }
+
+    .upload-zone {
+      border-color: var(--ref-border);
+      background: var(--ref-surface2);
+    }
+
+    .upload-zone .upload-icon,
+    .upload-zone span {
+      color: var(--ref-muted);
+    }
+
+    .upload-zone b {
+      color: var(--ref-text2);
+    }
+
+    .btn {
+      background: var(--ref-blue);
+      transition: background var(--ref-transition), color var(--ref-transition), border-color var(--ref-transition), box-shadow var(--ref-transition), transform .2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--ref-blue2);
+      box-shadow: 0 5px 14px color-mix(in srgb, var(--ref-blue) 24%, transparent);
+    }
+
+    .btn.secondary,
+    .pager button {
+      border-color: var(--ref-border);
+      background: var(--ref-surface2);
+      color: var(--ref-text2);
+    }
+
+    .search,
+    select {
+      border-color: var(--ref-border);
+      background: var(--ref-surface2);
+      color: var(--ref-text);
+    }
+
+    .search input {
+      background: transparent;
+      color: var(--ref-text);
+    }
+
+    table,
+    th,
+    td {
+      border-color: var(--ref-border2);
+    }
+
+    th {
+      background: var(--ref-surface2);
+      color: var(--ref-text2);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--ref-border);
+      border-radius: 8px;
+      background: var(--ref-surface2);
+      color: var(--ref-text2);
+      cursor: pointer;
+      font-size: 15px;
+      transition: background var(--ref-transition), color var(--ref-transition), border-color var(--ref-transition), transform .2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle.is-turning {
+      animation: themeIconTurn .45s ease;
+    }
+
+    @keyframes themeIconTurn {
+      0% { transform: rotate(0) scale(1); }
+      45% { transform: rotate(150deg) scale(.72); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes contentReveal {
+      from { opacity: 0; transform: translateY(9px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .welcome {
+      animation: contentReveal .45s var(--ref-transition) both;
+    }
+
+    body.loaded .dashboard {
+      animation: contentReveal .45s var(--ref-transition) both;
+    }
+
+    body.loaded .card,
+    body.loaded .grid .box,
+    body.loaded .details {
+      animation: contentReveal .4s var(--ref-transition) both;
+    }
+
+    body.loaded .card:nth-child(2) { animation-delay: 40ms; }
+    body.loaded .card:nth-child(3) { animation-delay: 80ms; }
+    body.loaded .card:nth-child(4) { animation-delay: 120ms; }
+    body.loaded .card:nth-child(5) { animation-delay: 160ms; }
+
+    body.dark-theme {
+      --ref-bg: #0a1422;
+      --ref-bg2: #0e1b2c;
+      --ref-surface: #112235;
+      --ref-surface2: #162b43;
+      --ref-surface3: #1d3854;
+      --ref-text: #f5f8fc;
+      --ref-text2: #b6c5d5;
+      --ref-muted: #8ca0b5;
+      --ref-border: #2c4965;
+      --ref-border2: #203952;
+      --ref-blue: #5db5f4;
+      --ref-blue2: #347fbd;
+      --ref-shadow: 0 18px 46px rgba(0, 0, 0, .24);
+      --ref-shadow2: 0 8px 24px rgba(0, 0, 0, .18);
+    }
+
+    body.dark-theme .top {
+      background: var(--ref-surface);
+    }
+
+    body.dark-theme .logos img.yitran {
+      display: none;
+    }
+
+    body.dark-theme .logos::after {
+      content: '';
+      display: block;
+      width: 92px;
+      height: 42px;
+      background: url('yitran-dark.png') center / contain no-repeat;
+    }
+
+    body.dark-theme .welcome-copy,
+    body.dark-theme .welcome-upload {
+      background: linear-gradient(120deg, var(--ref-surface) 0%, var(--ref-bg2) 100%);
+    }
+
+    body.dark-theme .welcome-copy::after {
+      border-color: rgba(93, 181, 244, .1);
+    }
+
+    body.dark-theme .b { background: #163753; color: #77c8ff; }
+    body.dark-theme .g { background: #173d3b; color: #68d8b8; }
+    body.dark-theme .p { background: #293852; color: #a3c9f0; }
+    body.dark-theme .o { background: #463718; color: #f5bd57; }
+    body.dark-theme .r { background: #482a35; color: #ff91a0; }
+
+    body.dark-theme .donut::after,
+    body.dark-theme .gauge::after {
+      background: var(--ref-surface);
+    }
+
+    body.dark-theme .upload-zone {
+      background: rgba(22, 43, 67, .68);
+    }
+
+    body.dark-theme .table {
+      border-color: var(--ref-border2);
+    }
+
+    body.dark-theme .tag.completed { background: #174536; color: #74d8a0; }
+    body.dark-theme .tag.progress { background: #4b3918; color: #f3c464; }
+    body.dark-theme .tag.pending { background: #4b2830; color: #ff98a3; }
+    body.dark-theme .tag.other { background: #293b4d; color: #b8c8d8; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -427,48 +949,77 @@
       <h1>Issue Analysis Dashboard</h1>
       <p>Installation issues and resolution progress</p>
     </div>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">&#9789;</button>
   </header>
 
-  <section id="drop" class="upload">
-    <div>
-      <b id="name">&#8679; Upload your installation activity Excel file</b>
-      <span id="sub">Dashboard starts at zero. Upload or drag an Excel file here.</span>
-      <span id="filename" class="filename"></span>
+  <section class="welcome">
+    <div class="welcome-copy">
+      <p class="eyebrow">NIC installation operations</p>
+      <h2>NIC Installation Issue Dashboard</h2>
+      <p>Upload the latest field activity workbook to review issues reported during NIC installation activities. Track reported issues, field actions, resolution progress, and pending work across installation sites.</p>
+      <div class="chips">
+        <span class="chip">NIC installation</span>
+        <span class="chip">Field issues</span>
+        <span class="chip">Resolution tracking</span>
+        <span class="chip">Local processing</span>
+      </div>
     </div>
-    <div>
-      <button class="btn secondary" id="reset" disabled>Reset</button>
-      <button class="btn" onclick="fileInput.click()">Upload Excel</button>
+
+    <div id="drop" class="welcome-upload">
+      <h3>Upload field activity workbook</h3>
+      <p>Use the latest Excel file maintained by the NIC installation team.</p>
+      <div class="upload-zone">
+        <div class="upload-icon">&#8679;</div>
+        <b>Drag &amp; drop the field activity Excel file here</b>
+        <span>or browse for the file on your computer</span>
+        <button class="btn" onclick="fileInput.click()">Browse Excel File</button>
+        <div><span>XLSX OR XLS &middot; MAXIMUM 25 MB</span></div>
+      </div>
+      <p class="privacy-note">&#128274; Your field activity file is processed locally and is never uploaded.</p>
+      <input id="fileInput" type="file" accept=".xlsx,.xls" hidden>
     </div>
-    <input id="fileInput" type="file" accept=".xlsx,.xls" hidden>
   </section>
+
+  <div class="dashboard">
+    <section class="upload" id="dashboardUpload">
+      <div>
+        <b id="name">&#8679; Upload NIC field activity Excel file</b>
+        <span id="sub">Dashboard starts at zero. Upload a workbook to analyze field installation issues.</span>
+        <span id="filename" class="filename"></span>
+      </div>
+      <div>
+        <button class="btn secondary" id="reset" disabled>Reset</button>
+        <button class="btn" onclick="fileInput.click()">Upload Excel</button>
+      </div>
+    </section>
 
   <main class="wrap">
 
     <section class="cards">
-      <div class="card b"><b id="kpiRaised">0</b><span>Complaints Raised</span><small>Sum of "Complaint Raised"</small></div>
-      <div class="card g"><b id="kpiResolved">0</b><span>Resolved</span><small>Sum of "Resolved"</small></div>
-      <div class="card p"><b id="kpiCompleted">0</b><span>Completed Activities</span><small>Rows with Status = Completed</small></div>
-      <div class="card o"><b id="kpiPending">0</b><span>Pending</span><small>Raised &minus; Resolved</small></div>
-      <div class="card r"><b id="kpiOther">0</b><span>In Progress / Other</span><small>All other statuses</small></div>
+      <div class="card b"><b id="kpiRaised">0</b><span>Issues Reported</span><small>Total issues reported by the field team</small></div>
+      <div class="card g"><b id="kpiResolved">0</b><span>Issues Resolved</span><small>Total issues marked as resolved</small></div>
+      <div class="card p"><b id="kpiCompleted">0</b><span>Completed Records</span><small>Rows with status marked Completed</small></div>
+      <div class="card o"><b id="kpiPending">0</b><span>Pending Issues</span><small>Reported issues not yet resolved</small></div>
+      <div class="card r"><b id="kpiOther">0</b><span>In Progress / Other</span><small>All remaining field issue statuses</small></div>
     </section>
 
     <section class="grid">
 
       <article class="box">
-        <h2>Issue Status Overview</h2>
+        <h2>Issue Resolution Status</h2>
         <div id="donut" class="donut"></div>
         <div id="donutLegend" class="legend"></div>
       </article>
 
       <article class="box">
-        <h2>Issues by Classification</h2>
+        <h2>Issues by Category</h2>
         <div id="bars" class="bars">
           <p class="empty">Upload an Excel workbook.</p>
         </div>
       </article>
 
       <article class="box">
-        <h2>Raised vs Resolved</h2>
+        <h2>Reported vs Resolved</h2>
         <div id="gauge" class="gauge">
           <div>
             <b id="percent">0%</b>
@@ -481,7 +1032,7 @@
 
     <article class="box details">
       <div class="detailhead">
-        <h2>Field Issue Details</h2>
+        <h2>NIC Field Installation Issues</h2>
         <div>
           <select id="statusFilter">
             <option value="">All statuses</option>
@@ -519,6 +1070,7 @@
     </article>
 
   </main>
+  </div>
 
   <script>
     // ---------------------------------------------------------------
@@ -695,19 +1247,21 @@
 
       populateStatusFilter();
       currentPage = 1;
+      document.body.classList.add('loaded');
       render();
     }
 
     function resetDashboard() {
       allRows = [];
       headerMap = {};
-      el('name').textContent = '\u21e7 Upload your installation activity Excel file';
-      el('sub').textContent = 'Dashboard starts at zero. Upload or drag an Excel file here.';
+      el('name').textContent = '\u21e7 Upload NIC field activity Excel file';
+      el('sub').textContent = 'Dashboard starts at zero. Upload a workbook to analyze field installation issues.';
       el('filename').textContent = '';
       el('reset').disabled = true;
       el('search').value = '';
       el('statusFilter').innerHTML = '<option value="">All statuses</option>';
       fileInput.value = '';
+      document.body.classList.remove('loaded');
       render();
     }
 
@@ -874,6 +1428,26 @@
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Issue Details');
       XLSX.writeFile(workbook, 'installation-issue-details.xlsx');
     }
+
+    // Keep the visual theme independent from workbook state.
+    function setTheme(isDark) {
+      document.body.classList.toggle('dark-theme', isDark);
+      const toggle = el('themeToggle');
+      toggle.textContent = isDark ? '\u2600' : '\u263e';
+      toggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      toggle.title = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+    }
+
+    const savedTheme = localStorage.getItem('installation-dashboard-theme');
+    setTheme(savedTheme === 'dark');
+    el('themeToggle').addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('dark-theme');
+      setTheme(isDark);
+      localStorage.setItem('installation-dashboard-theme', isDark ? 'dark' : 'light');
+      el('themeToggle').classList.remove('is-turning');
+      void el('themeToggle').offsetWidth;
+      el('themeToggle').classList.add('is-turning');
+    });
 
     // ---------------------------------------------------------------
     // Event wiring
