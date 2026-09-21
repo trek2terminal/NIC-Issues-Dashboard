@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,6 +29,9 @@
 
     /* ---------- Header ---------- */
     .top {
+      position: sticky;
+      top: 0;
+      z-index: 70;
       min-height: 58px;
       background: #ffffff;
       display: flex;
@@ -80,6 +83,49 @@
       margin: 4px 0;
       color: #71859b;
       font-size: 9px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .file-chip {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      max-width: 260px;
+      padding: 7px 10px;
+      border: 1px solid #dce8f2;
+      border-radius: 999px;
+      background: #f7fafc;
+      color: #41627f;
+      font-size: 10px;
+    }
+
+    .file-chip strong {
+      max-width: 210px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-chip .dot {
+      width: 6px;
+      height: 6px;
+      flex: none;
+      border-radius: 50%;
+      background: #05a58b;
+    }
+
+    .btn.icon-only {
+      min-width: 34px;
+      min-height: 32px;
+      padding: 7px;
+      background: transparent;
+      color: #41627f;
     }
 
     /* ---------- Upload bar ---------- */
@@ -214,6 +260,13 @@
       border-radius: 9px;
       background: #f9fbfd;
       text-align: center;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .upload-zone:focus-visible {
+      outline: 2px solid #126dde;
+      outline-offset: 3px;
     }
 
     .upload-zone .upload-icon {
@@ -273,6 +326,159 @@
       font-size: 11px;
     }
 
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(4, 10, 18, .55);
+      backdrop-filter: blur(8px);
+    }
+
+    .loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-card {
+      width: min(430px, 100%);
+      padding: 22px;
+      border: 1px solid #dce8f2;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, .24);
+    }
+
+    .loading-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .loading-percent {
+      margin-left: auto;
+      color: #126dde;
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+    }
+
+    .spinner {
+      width: 17px;
+      height: 17px;
+      border: 2px solid #dce8f2;
+      border-top-color: #126dde;
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-msg {
+      margin-top: 7px;
+      color: #70869b;
+      font-size: 11px;
+    }
+
+    .loading-progress {
+      height: 7px;
+      margin-top: 15px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e8f0f5;
+    }
+
+    .loading-progress-fill {
+      width: 10%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #126dde, #05a58b);
+      transition: width .3s ease;
+    }
+
+    .loading-steps {
+      display: grid;
+      gap: 7px;
+      margin-top: 15px;
+    }
+
+    .load-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #70869b;
+      font-size: 11px;
+    }
+
+    .load-step.active { color: #0d2c54; }
+    .load-step.done { color: #41627f; }
+
+    .load-dot {
+      width: 15px;
+      height: 15px;
+      flex: none;
+      border: 1px solid #dce8f2;
+      border-radius: 50%;
+    }
+
+    .load-step.active .load-dot {
+      border-color: #126dde;
+      box-shadow: 0 0 0 4px rgba(18, 109, 222, .08);
+    }
+
+    .load-step.active .load-dot::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      margin: 4px;
+      border-radius: 50%;
+      background: #126dde;
+    }
+
+    .load-step.done .load-dot {
+      border-color: #05a58b;
+    }
+
+    .load-step.done .load-dot::after {
+      content: '\2713';
+      display: block;
+      color: #05a58b;
+      font-size: 10px;
+      line-height: 13px;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 180;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      width: min(390px, calc(100vw - 40px));
+      padding: 12px 13px;
+      border: 1px solid #dce8f2;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 18px 46px rgba(24, 67, 105, .15);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(22px);
+      transition: opacity .35s ease, transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .toast.show { opacity: 1; transform: none; }
+    .toast-icon { color: #05a58b; font-size: 18px; line-height: 1; }
+    .toast-icon.error { color: #c73f4f; }
+    .toast-title { font-size: 11px; font-weight: 700; }
+    .toast-text { margin-top: 2px; color: #70869b; font-size: 10px; line-height: 1.5; }
+
     .upload {
       border: 1px dashed #9bbd44;
       background: #fbfdf8;
@@ -282,6 +488,21 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+    }
+
+    .dashboard .upload {
+      width: calc(100% - 24px);
+      margin: 0 auto;
+      padding: 13px 0;
+      border: 0;
+      border-bottom: 1px solid #dce8f2;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .dashboard .upload.drag {
+      background: transparent;
     }
 
     .upload.drag {
@@ -877,10 +1098,49 @@
       --ref-blue2: #347fbd;
       --ref-shadow: 0 18px 46px rgba(0, 0, 0, .24);
       --ref-shadow2: 0 8px 24px rgba(0, 0, 0, .18);
+      background: #0a1422;
+      color: #f5f8fc;
     }
 
     body.dark-theme .top {
+      background: #112235;
+      border-bottom-color: #203952;
+    }
+
+    body.dark-theme .dashboard .upload {
+      border-bottom-color: #203952;
+      color: #f5f8fc;
+    }
+
+    body.dark-theme .file-chip,
+    body.dark-theme .loading-card,
+    body.dark-theme .toast {
+      border-color: var(--ref-border);
       background: var(--ref-surface);
+      color: var(--ref-text);
+    }
+
+    body.dark-theme .file-chip {
+      color: var(--ref-text2);
+    }
+
+    body.dark-theme .btn.icon-only {
+      color: var(--ref-text2);
+    }
+
+    body.dark-theme .loading-msg,
+    body.dark-theme .toast-text,
+    body.dark-theme .load-step {
+      color: var(--ref-muted);
+    }
+
+    body.dark-theme .load-step.active,
+    body.dark-theme .toast-title {
+      color: var(--ref-text);
+    }
+
+    body.dark-theme .loading-progress {
+      background: var(--ref-surface3);
     }
 
     body.dark-theme .logos img.yitran {
@@ -935,6 +1195,332 @@
         transition-duration: .01ms !important;
       }
     }
+
+    @media (max-width: 600px) {
+      .top {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .file-chip {
+        max-width: calc(100% - 46px);
+      }
+    }
+
+    /* ---------- Management dashboard refinement ---------- */
+    .dashboard {
+      position: relative;
+      padding-bottom: 28px;
+    }
+
+    .dashboard::before {
+      content: '';
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ref-border), transparent);
+    }
+
+    .dashboard .upload {
+      position: relative;
+      min-height: 58px;
+      align-items: center;
+    }
+
+    .dashboard .upload::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(#126dde, #05a58b);
+    }
+
+    .dashboard .upload > div:first-child {
+      padding-left: 12px;
+    }
+
+    .dashboard .upload b {
+      color: var(--ref-text);
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: .01em;
+    }
+
+    .dashboard .upload span {
+      color: var(--ref-muted);
+      font-size: 10px;
+    }
+
+    .dashboard .upload .btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .dashboard .upload .secondary {
+      border: 1px solid var(--ref-border);
+      background: var(--ref-surface2);
+      color: var(--ref-text2);
+    }
+
+    .cards {
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .card {
+      min-height: 104px;
+      padding: 16px 17px 14px 19px;
+      border: 1px solid var(--ref-border);
+      border-radius: 12px;
+      box-shadow: var(--ref-shadow2);
+      transition: transform var(--ref-transition), box-shadow var(--ref-transition), border-color var(--ref-transition), background .25s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: currentColor;
+      opacity: .82;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      right: -42px;
+      top: -48px;
+      border: 16px solid currentColor;
+      border-radius: 50%;
+      opacity: .07;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, currentColor 32%, var(--ref-border));
+      box-shadow: var(--ref-shadow);
+    }
+
+    .card b {
+      position: relative;
+      z-index: 1;
+      font-size: 28px;
+      letter-spacing: -.035em;
+    }
+
+    .card span,
+    .card small {
+      position: relative;
+      z-index: 1;
+    }
+
+    .grid {
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .box {
+      border-radius: 12px;
+      border-color: var(--ref-border);
+      box-shadow: var(--ref-shadow2);
+      transition: transform var(--ref-transition), border-color var(--ref-transition), box-shadow var(--ref-transition), background .25s ease;
+    }
+
+    .grid .box:hover,
+    .details:hover {
+      border-color: color-mix(in srgb, var(--ref-blue) 30%, var(--ref-border));
+      box-shadow: var(--ref-shadow);
+    }
+
+    .box h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    .box h2::before {
+      content: '';
+      width: 18px;
+      height: 3px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--ref-blue), var(--ref-teal));
+    }
+
+    .donut,
+    .gauge {
+      animation: chartReveal .7s cubic-bezier(.2, .8, .2, 1) both;
+      box-shadow: 0 10px 24px rgba(18, 109, 222, .08);
+    }
+
+    @keyframes chartReveal {
+      from { opacity: 0; transform: scale(.78) rotate(-12deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    .bars {
+      height: 190px;
+      gap: 10px;
+      padding: 12px 5px 38px;
+      border-bottom-color: var(--ref-border);
+      background: repeating-linear-gradient(to bottom, transparent 0 34px, color-mix(in srgb, var(--ref-border) 68%, transparent) 35px 36px);
+    }
+
+    .bar {
+      transform-origin: bottom;
+      animation: barRise .7s cubic-bezier(.2, .8, .2, 1) both;
+      box-shadow: 0 -3px 8px rgba(18, 109, 222, .08);
+    }
+
+    .bc:nth-child(2) .bar { animation-delay: 45ms; }
+    .bc:nth-child(3) .bar { animation-delay: 90ms; }
+    .bc:nth-child(4) .bar { animation-delay: 135ms; }
+    .bc:nth-child(5) .bar { animation-delay: 180ms; }
+    .bc:nth-child(6) .bar { animation-delay: 225ms; }
+    .bc:nth-child(7) .bar { animation-delay: 270ms; }
+    .bc:nth-child(8) .bar { animation-delay: 315ms; }
+
+    @keyframes barRise {
+      from { opacity: 0; transform: scaleY(0); }
+      to { opacity: 1; transform: scaleY(1); }
+    }
+
+    .details {
+      margin-top: 12px;
+      padding: 17px;
+    }
+
+    .detailhead h2 {
+      margin: 0;
+      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-size: 17px;
+    }
+
+    .detailhead > div {
+      gap: 7px;
+    }
+
+    .search,
+    select {
+      min-height: 34px;
+      border-radius: 8px;
+      background: var(--ref-surface2);
+    }
+
+    .search input {
+      font-size: 11px;
+    }
+
+    .details .btn {
+      min-height: 34px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .table {
+      margin-top: 13px;
+      border-radius: 9px;
+      border-color: var(--ref-border);
+    }
+
+    table {
+      font-size: 10.5px;
+    }
+
+    th {
+      padding: 10px 9px;
+      border-color: var(--ref-border);
+      background: var(--ref-surface2);
+      color: var(--ref-muted);
+      font-size: 9px;
+      letter-spacing: .07em;
+    }
+
+    td {
+      padding: 9px;
+      border-color: var(--ref-border2);
+      color: var(--ref-text2);
+    }
+
+    tbody tr {
+      transition: background .18s ease, transform .18s ease;
+    }
+
+    tbody tr:hover {
+      background: color-mix(in srgb, var(--ref-blue) 6%, transparent);
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 9px;
+    }
+
+    .pager {
+      margin-top: 10px;
+      color: var(--ref-muted);
+    }
+
+    .pager button {
+      min-height: 29px;
+      border-radius: 7px;
+      border-color: var(--ref-border);
+      background: var(--ref-surface2);
+      color: var(--ref-text2);
+      transition: background var(--ref-transition), transform var(--ref-transition), border-color var(--ref-transition);
+    }
+
+    .pager button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: var(--ref-blue);
+      background: var(--ref-surface3);
+    }
+
+    .loading-overlay.show .loading-card {
+      animation: loadingCardIn .4s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .loading-progress-fill {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loading-progress-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .4), transparent);
+      animation: progressShine 1.35s ease-in-out infinite;
+    }
+
+    @keyframes progressShine {
+      from { transform: translateX(-130%); }
+      to { transform: translateX(250%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .donut,
+      .gauge,
+      .bar,
+      .loading-progress-fill::after {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -949,7 +1535,13 @@
       <h1>Issue Analysis Dashboard</h1>
       <p>Installation issues and resolution progress</p>
     </div>
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">&#9789;</button>
+    <div class="top-actions">
+      <div class="file-chip" id="headerFileChip" aria-live="polite">
+        <span class="dot"></span>
+        <strong id="headerFileName">No workbook loaded</strong>
+      </div>
+      <button id="themeToggle" class="btn icon-only theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">&#9789;</button>
+    </div>
   </header>
 
   <section class="welcome">
@@ -968,11 +1560,11 @@
     <div id="drop" class="welcome-upload">
       <h3>Upload field activity workbook</h3>
       <p>Use the latest Excel file maintained by the NIC installation team.</p>
-      <div class="upload-zone">
+      <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload NIC field activity Excel file">
         <div class="upload-icon">&#8679;</div>
         <b>Drag &amp; drop the field activity Excel file here</b>
         <span>or browse for the file on your computer</span>
-        <button class="btn" onclick="fileInput.click()">Browse Excel File</button>
+        <button class="btn" id="browseBtn" type="button">Browse Excel File</button>
         <div><span>XLSX OR XLS &middot; MAXIMUM 25 MB</span></div>
       </div>
       <p class="privacy-note">&#128274; Your field activity file is processed locally and is never uploaded.</p>
@@ -988,8 +1580,8 @@
         <span id="filename" class="filename"></span>
       </div>
       <div>
-        <button class="btn secondary" id="reset" disabled>Reset</button>
-        <button class="btn" onclick="fileInput.click()">Upload Excel</button>
+        <button class="btn secondary" id="reset" disabled>Clear Dashboard</button>
+        <button class="btn" id="dashboardUploadBtn" type="button">Change File</button>
       </div>
     </section>
 
@@ -1072,6 +1664,28 @@
   </main>
   </div>
 
+  <div class="loading-overlay" id="loadingOverlay" aria-live="polite">
+    <div class="loading-card">
+      <div class="loading-head"><span class="spinner" aria-hidden="true"></span><span id="loadingTitle">Reading workbook</span><span class="loading-percent" id="loadingPercent">0%</span></div>
+      <div class="loading-msg" id="loadingMsg">Opening the Excel file locally.</div>
+      <div class="loading-progress" role="progressbar" aria-label="Workbook loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-progress-fill" id="loadingFill"></div></div>
+      <div class="loading-steps">
+        <div class="load-step" data-step="read"><span class="load-dot"></span>Reading workbook</div>
+        <div class="load-step" data-step="validate"><span class="load-dot"></span>Validating field activity structure</div>
+        <div class="load-step" data-step="render"><span class="load-dot"></span>Preparing issue dashboard</div>
+        <div class="load-step" data-step="ready"><span class="load-dot"></span>Dashboard ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="toast-icon" id="toastIcon">&#10003;</div>
+    <div>
+      <div class="toast-title" id="toastTitle">Workbook ready</div>
+      <div class="toast-text" id="toastText"></div>
+    </div>
+  </div>
+
   <script>
     // ---------------------------------------------------------------
     // State
@@ -1115,6 +1729,8 @@
     function el(id) {
       return document.getElementById(id);
     }
+
+    const fileInput = el('fileInput');
 
     function normalizeKey(key) {
       return String(key || '').toLowerCase().replace(/\s+/g, ' ').trim();
@@ -1228,27 +1844,95 @@
     // ---------------------------------------------------------------
     // Loading the workbook
     // ---------------------------------------------------------------
+    function setLoadStep(step, progress, title, message) {
+      const steps = ['read', 'validate', 'render', 'ready'];
+      steps.forEach(name => {
+        const item = document.querySelector(`.load-step[data-step="${name}"]`);
+        item.classList.toggle('active', name === step);
+        item.classList.toggle('done', steps.indexOf(name) < steps.indexOf(step));
+      });
+      el('loadingTitle').textContent = title;
+      el('loadingMsg').textContent = message;
+      el('loadingPercent').textContent = `${Math.round(progress)}%`;
+      el('loadingFill').style.width = `${progress}%`;
+      el('loadingFill').parentElement.setAttribute('aria-valuenow', String(Math.round(progress)));
+    }
+
+    function showLoading() {
+      setLoadStep('read', 8, 'Reading workbook', 'Opening the Excel file locally.');
+      el('loadingOverlay').classList.add('show');
+    }
+
+    function hideLoading() {
+      el('loadingOverlay').classList.remove('show');
+    }
+
+    function showToast(title, message, type = 'success') {
+      const toast = el('toast');
+      el('toastTitle').textContent = title;
+      el('toastText').textContent = message;
+      el('toastIcon').textContent = type === 'error' ? '\u26a0' : '\u2713';
+      el('toastIcon').classList.toggle('error', type === 'error');
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 5200);
+    }
+
+    function validateFile(file) {
+      const name = String(file?.name || '').toLowerCase();
+      if (!name.endsWith('.xlsx') && !name.endsWith('.xls')) {
+        return 'Please upload an .xlsx or .xls field activity workbook.';
+      }
+      if (file.size > 25 * 1024 * 1024) {
+        return 'The workbook is larger than the 25 MB upload limit.';
+      }
+      return '';
+    }
+
     async function loadWorkbook(file) {
       if (!file) return;
 
-      const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+      const validationError = validateFile(file);
+      if (validationError) {
+        showToast('Upload failed', validationError, 'error');
+        return;
+      }
 
-      const sheetName = pickDataSheet(workbook);
-      const sheet = workbook.Sheets[sheetName];
+      showLoading();
+      try {
+        setLoadStep('read', 20, 'Reading workbook', 'Opening the Excel file locally.');
+        const buffer = await file.arrayBuffer();
+        await new Promise(resolve => setTimeout(resolve, 60));
 
-      allRows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false, cellDates: true });
-      headerMap = buildHeaderMap(allRows[0]);
+        setLoadStep('validate', 48, 'Validating field activity structure', 'Finding the issue and resolution columns.');
+        const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+        const sheetName = pickDataSheet(workbook);
+        const sheet = workbook.Sheets[sheetName];
+        if (!sheet) throw new Error('No readable worksheet was found in this workbook.');
 
-      el('name').textContent = file.name;
-      el('filename').textContent = `Sheet used: "${sheetName}"`;
-      el('sub').textContent = `${formatNumber(allRows.length)} records loaded.`;
-      el('reset').disabled = false;
+        allRows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false, cellDates: true });
+        headerMap = buildHeaderMap(allRows[0]);
 
-      populateStatusFilter();
-      currentPage = 1;
-      document.body.classList.add('loaded');
-      render();
+        setLoadStep('render', 82, 'Preparing issue dashboard', 'Building field issue cards, charts, and records.');
+        el('name').textContent = file.name;
+        el('filename').textContent = `Sheet used: "${sheetName}"`;
+        el('sub').textContent = `${formatNumber(allRows.length)} field records loaded.`;
+        el('reset').disabled = false;
+        el('headerFileName').textContent = file.name;
+        el('headerFileChip').style.display = 'flex';
+
+        populateStatusFilter();
+        currentPage = 1;
+        document.body.classList.add('loaded');
+        setLoadStep('ready', 100, 'Dashboard ready', 'Field installation issues are ready to review.');
+        render();
+        await new Promise(resolve => setTimeout(resolve, 220));
+        hideLoading();
+        showToast('Workbook ready', `${formatNumber(allRows.length)} field records are ready to review.`);
+      } catch (error) {
+        hideLoading();
+        showToast('Unable to load workbook', error.message || 'Please check the workbook format and try again.', 'error');
+      }
     }
 
     function resetDashboard() {
@@ -1261,6 +1945,8 @@
       el('search').value = '';
       el('statusFilter').innerHTML = '<option value="">All statuses</option>';
       fileInput.value = '';
+      el('headerFileName').textContent = 'No workbook loaded';
+      el('headerFileChip').style.display = 'none';
       document.body.classList.remove('loaded');
       render();
     }
@@ -1431,19 +2117,31 @@
 
     // Keep the visual theme independent from workbook state.
     function setTheme(isDark) {
+      document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
       document.body.classList.toggle('dark-theme', isDark);
+      document.body.style.backgroundColor = isDark ? '#0a1422' : '#f3f7fb';
+      document.querySelector('.top').style.backgroundColor = isDark ? '#112235' : '#ffffff';
       const toggle = el('themeToggle');
       toggle.textContent = isDark ? '\u2600' : '\u263e';
       toggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
       toggle.title = isDark ? 'Switch to light theme' : 'Switch to dark theme';
     }
 
-    const savedTheme = localStorage.getItem('installation-dashboard-theme');
+    let savedTheme = '';
+    try {
+      savedTheme = localStorage.getItem('installation-dashboard-theme') || '';
+    } catch (error) {
+      savedTheme = '';
+    }
     setTheme(savedTheme === 'dark');
     el('themeToggle').addEventListener('click', () => {
       const isDark = !document.body.classList.contains('dark-theme');
       setTheme(isDark);
-      localStorage.setItem('installation-dashboard-theme', isDark ? 'dark' : 'light');
+      try {
+        localStorage.setItem('installation-dashboard-theme', isDark ? 'dark' : 'light');
+      } catch (error) {
+        // File and private browsing modes may block storage.
+      }
       el('themeToggle').classList.remove('is-turning');
       void el('themeToggle').offsetWidth;
       el('themeToggle').classList.add('is-turning');
@@ -1453,6 +2151,20 @@
     // Event wiring
     // ---------------------------------------------------------------
     fileInput.addEventListener('change', e => loadWorkbook(e.target.files[0]));
+    el('browseBtn').addEventListener('click', e => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+    el('dashboardUploadBtn').addEventListener('click', () => fileInput.click());
+    el('uploadZone').addEventListener('click', e => {
+      if (!e.target.closest('button')) fileInput.click();
+    });
+    el('uploadZone').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
     el('reset').addEventListener('click', resetDashboard);
     el('search').addEventListener('input', applyFilters);
     el('statusFilter').addEventListener('change', applyFilters);
