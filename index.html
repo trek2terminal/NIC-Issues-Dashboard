@@ -2211,8 +2211,9 @@
 
     .timeline-svg .timeline-area {
       opacity: .16;
+      transform-origin: center;
       animation: areaFadeIn .85s ease forwards;
-      transition: opacity .3s ease;
+      transition: opacity .3s ease, transform .3s ease;
     }
 
     .timeline-svg .timeline-line {
@@ -2335,27 +2336,29 @@
       gap: 4px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      padding: 2px 2px;
+      border: 1px solid color-mix(in srgb, var(--ref-border) 70%, transparent);
+      border-radius: 8px;
+      background: rgba(248, 251, 253, .9);
     }
 
     .chart-cycle-button {
       min-height: 25px;
       padding: 4px 9px;
-      border: 1px solid color-mix(in srgb, var(--ref-border) 82%, transparent);
-      border-radius: 7px;
-      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(238,244,248,.9));
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
       color: var(--ref-muted);
       cursor: pointer;
       font-size: 9px;
       font-weight: 700;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
       transition: background var(--ref-transition), border-color var(--ref-transition), color var(--ref-transition), transform var(--ref-transition), box-shadow var(--ref-transition);
     }
 
     .chart-cycle-button:hover {
       transform: translateY(-1px);
-      border-color: color-mix(in srgb, var(--ref-blue) 50%, var(--ref-border));
       color: var(--ref-text);
-      box-shadow: 0 4px 12px rgba(26, 99, 166, .08);
+      border-color: color-mix(in srgb, var(--ref-border) 80%, transparent);
     }
     .chart-cycle-button:active {
       transform: scale(.96);
@@ -2367,10 +2370,10 @@
     }
 
     .chart-cycle-button.is-active {
-      border-color: rgba(27,115,182,.4);
-      background: linear-gradient(180deg, rgba(43,123,196,.12), rgba(255,255,255,.88));
+      border-color: rgba(27,115,182,.28);
+      background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(230,240,248,.9));
       color: var(--ref-blue);
-      box-shadow: 0 0 0 1px rgba(27,115,182,.08), 0 8px 18px rgba(27,115,182,.08);
+      box-shadow: 0 1px 0 rgba(255,255,255,.7), inset 0 1px 0 rgba(255,255,255,.9);
     }
 
     .chart-cycle-button.auto.is-active {
@@ -3246,10 +3249,15 @@
     function setTimelineView(view) {
       timelineView = view === 'area' ? 'area' : 'line';
       document.querySelectorAll('[data-timeline-view]').forEach(button => {
-        button.classList.toggle('is-active', button.dataset.timelineView === timelineView);
+        const isActive = button.dataset.timelineView === timelineView;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
       });
       document.querySelectorAll('#timelineAreas .timeline-area').forEach(area => {
-        area.style.opacity = timelineView === 'area' ? '.22' : '0';
+        const showArea = timelineView === 'area';
+        area.style.opacity = showArea ? '.22' : '0';
+        area.style.transform = showArea ? 'scale(1)' : 'scale(.98)';
+        area.style.visibility = showArea ? 'visible' : 'hidden';
       });
     }
 
