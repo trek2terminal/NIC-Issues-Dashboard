@@ -1881,9 +1881,41 @@
       line-height: 1.35;
     }
 
-    .classification-donut-view .legend span {
-      display: block;
+    .classification-donut-view .legend > span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       width: 100%;
+    }
+
+    .classification-donut-view .legend .legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .classification-donut-view .legend .legend-label {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .classification-donut-view .legend .legend-value {
+      flex: none;
+      font-variant-numeric: tabular-nums;
+      color: var(--ref-muted);
+    }
+
+    .classification-donut-view .legend .legend-value b {
+      color: var(--ref-text2);
+      font-weight: 800;
+      margin-left: 3px;
     }
 
     .status-stage {
@@ -2705,6 +2737,26 @@
       el('kpiPending').textContent = formatNumber(pending);
       el('kpiOther').textContent = formatNumber(otherRows);
 
+      if (!allRows.length) return { totalRaised, totalResolved };
+
+      const total = allRows.length || 1;
+      const resolvedRate = totalRaised ? Math.round((totalResolved / totalRaised) * 100) : 0;
+      const completedCount = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'completed').length;
+      const pendingCount = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'pending').length;
+      const otherCount = allRows.filter(r => {
+        const b = statusBucket(getField(r, COLUMNS.status));
+        return b !== 'completed' && b !== 'pending';
+      }).length;
+
+      document.querySelector('#kpiResolved').closest('.card').querySelector('small').textContent =
+        `Total issues marked as resolved · ${resolvedRate}% resolution rate`;
+      document.querySelector('#kpiCompleted').closest('.card').querySelector('small').textContent =
+        `Rows with status marked Completed · ${Math.round((completedCount / total) * 100)}% of records`;
+      document.querySelector('#kpiPending').closest('.card').querySelector('small').textContent =
+        `Reported issues not yet resolved · ${Math.round((pendingCount / total) * 100)}% of records`;
+      document.querySelector('#kpiOther').closest('.card').querySelector('small').textContent =
+        `All remaining field issue statuses · ${Math.round((otherCount / total) * 100)}% of records`;
+
       return { totalRaised, totalResolved };
     }
 
@@ -2814,9 +2866,13 @@
       });
 
       el('classificationDonut').style.background = `conic-gradient(${segments.map(item => item.segment).join(', ')})`;
-      el('classificationLegend').innerHTML = segments.map(item =>
-        `<span><i style="background:${item.color}"></i>${item.label} (${item.count})</span>`
-      ).join('');
+      el('classificationLegend').innerHTML = segments.map(item => {
+        const pct = Math.round((item.count / total) * 100);
+        return `<span class="legend-row">
+          <span class="legend-label"><i style="background:${item.color}"></i>${item.label}</span>
+          <span class="legend-value">${item.count} <b>${pct}%</b></span>
+        </span>`;
+      }).join('');
     }
 
     function setClassificationChartView(view) {
