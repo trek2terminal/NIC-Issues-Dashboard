@@ -150,7 +150,7 @@
       height: 6px;
       flex: none;
       border-radius: 50%;
-      background: #05a58b;
+      background: var(--ref-teal);
     }
 
     .btn.icon-only {
@@ -276,7 +276,7 @@
       height: 5px;
       margin-right: 5px;
       border-radius: 50%;
-      background: #2589dd;
+      background: var(--ref-blue);
     }
 
     .welcome-upload {
@@ -587,7 +587,7 @@
 
     .loading-percent {
       margin-left: auto;
-      color: #126dde;
+      color: var(--ref-blue);
       font-variant-numeric: tabular-nums;
       font-size: 12px;
     }
@@ -596,7 +596,7 @@
       width: 17px;
       height: 17px;
       border: 2px solid #dce8f2;
-      border-top-color: #126dde;
+      border-top-color: var(--ref-blue);
       border-radius: 50%;
       animation: spin .75s linear infinite;
     }
@@ -621,7 +621,7 @@
       width: 10%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #126dde, #05a58b);
+      background: linear-gradient(90deg, var(--ref-blue), var(--ref-teal));
       transition: width .3s ease;
     }
 
@@ -651,7 +651,7 @@
     }
 
     .load-step.active .load-dot {
-      border-color: #126dde;
+      border-color: var(--ref-blue);
       box-shadow: 0 0 0 4px rgba(18, 109, 222, .08);
     }
 
@@ -662,17 +662,17 @@
       height: 6px;
       margin: 4px;
       border-radius: 50%;
-      background: #126dde;
+      background: var(--ref-blue);
     }
 
     .load-step.done .load-dot {
-      border-color: #05a58b;
+      border-color: var(--ref-teal);
     }
 
     .load-step.done .load-dot::after {
       content: '\2713';
       display: block;
-      color: #05a58b;
+      color: var(--ref-teal);
       font-size: 10px;
       line-height: 13px;
       text-align: center;
@@ -699,13 +699,13 @@
     }
 
     .toast.show { opacity: 1; transform: none; }
-    .toast-icon { color: #05a58b; font-size: 18px; line-height: 1; }
+    .toast-icon { color: var(--ref-teal); font-size: 18px; line-height: 1; }
     .toast-icon.error { color: #c73f4f; }
     .toast-title { font-size: 11px; font-weight: 700; }
     .toast-text { margin-top: 2px; color: #70869b; font-size: 10px; line-height: 1.5; }
 
     .upload {
-      border: 1px dashed #9bbd44;
+      border: 1px dashed var(--ref-teal);
       background: #fbfdf8;
       padding: 17px 20px;
       display: flex;
@@ -939,6 +939,7 @@
       align-items: end;
       gap: 9px;
       border-bottom: 1px solid #d6e0ea;
+      padding-top: 34px;
       padding-bottom: 35px;
     }
 
@@ -1577,7 +1578,7 @@
       top: 0;
       bottom: 0;
       width: 3px;
-      background: linear-gradient(#126dde, #05a58b);
+      background: linear-gradient(var(--ref-blue), var(--ref-teal));
     }
 
     .dashboard .upload > div:first-child {
@@ -1841,6 +1842,7 @@
     .classification-stage .bars {
       height: 220px;
       margin: 0;
+      padding-top: 34px;
     }
 
     .classification-donut-view {
@@ -1914,6 +1916,7 @@
     .status-stage .bars {
       height: 220px;
       margin: 0;
+      padding-top: 34px;
     }
 
     .status-stage .bc span {
@@ -2743,7 +2746,7 @@
         ? entries.map(bucket => `
             <div class="bc">
               <em>${counts[bucket]}</em>
-              <div class="bar" style="height:${(counts[bucket] / maxCount) * 100}%;background:${STATUS_COLORS[bucket]}" ></div>
+              <div class="bar" style="height:${(counts[bucket] / maxCount) * 78}%;background:${STATUS_COLORS[bucket]}" ></div>
               <span>${labels[bucket]}</span>
             </div>
           `).join('')
@@ -2786,7 +2789,7 @@
       el('bars').innerHTML = topEntries.map(([label, count], i) => `
         <div class="bc">
           <em>${count}</em>
-          <div class="bar" style="height:${(count / maxCount) * 100}%;background:${CLASSIFICATION_COLORS[i % CLASSIFICATION_COLORS.length]}"></div>
+          <div class="bar" style="height:${(count / maxCount) * 78}%;background:${CLASSIFICATION_COLORS[i % CLASSIFICATION_COLORS.length]}"></div>
           <span>${label}</span>
         </div>
       `).join('');
