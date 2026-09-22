@@ -528,18 +528,20 @@
     }
 
     .btn {
-      border: 0;
-      border-radius: 6px;
-      background: #167b80;
-      color: #ffffff;
+      background: var(--ref-surface2);
+      color: var(--ref-text);
+      border: 1px solid var(--ref-border);
+      border-radius: 9px;
       padding: 10px 16px;
-      font-weight: bold;
+      font-weight: 800;
+      font-size: 12px;
       cursor: pointer;
       transition: background .2s ease, transform .2s ease;
     }
 
     .btn:hover:not(:disabled) {
-      background: #0f6267;
+      background: var(--ref-surface3);
+      border-color: color-mix(in srgb, var(--ref-blue) 45%, var(--ref-border));
       transform: translateY(-1px);
     }
 
@@ -1009,13 +1011,40 @@
     }
 
     .btn {
-      background: var(--ref-blue);
       transition: background var(--ref-transition), color var(--ref-transition), border-color var(--ref-transition), box-shadow var(--ref-transition), transform .2s ease;
     }
 
     .btn:hover:not(:disabled) {
+      background: var(--ref-surface3);
+      border-color: color-mix(in srgb, var(--ref-blue) 45%, var(--ref-border));
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
       background: var(--ref-blue2);
-      box-shadow: 0 5px 14px color-mix(in srgb, var(--ref-blue) 24%, transparent);
+      border-color: var(--ref-blue2);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--ref-blue);
+      border-color: var(--ref-blue);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn-danger {
+      color: var(--ref-bad);
+      border-color: color-mix(in srgb, var(--ref-bad) 34%, var(--ref-border));
+      background: color-mix(in srgb, var(--ref-bad) 6%, transparent);
+    }
+
+    .btn-sm {
+      padding: 7px 9px;
+      font-size: 11px;
     }
 
     .btn.secondary,
@@ -1902,7 +1931,7 @@
         <div class="upload-icon">&#8679;</div>
         <b>Drag &amp; drop the field activity Excel file here</b>
         <span>or browse for the file on your computer</span>
-        <button class="btn" id="browseBtn" type="button">Browse Excel File</button>
+        <button class="btn btn-primary" id="browseBtn" type="button">Browse Excel File</button>
         <div><span>XLSX OR XLS &middot; MAXIMUM 25 MB</span></div>
       </div>
       <p class="privacy-note">&#128274; Your field activity file is processed locally and is never uploaded.</p>
@@ -1918,8 +1947,8 @@
         <span id="filename" class="filename"></span>
       </div>
       <div>
-        <button class="btn secondary" id="reset" disabled>Clear Dashboard</button>
-        <button class="btn" id="dashboardUploadBtn" type="button">Change File</button>
+        <button class="btn btn-ghost" id="reset" disabled>Clear Dashboard</button>
+        <button class="btn btn-primary" id="dashboardUploadBtn" type="button">Change File</button>
       </div>
     </section>
 
