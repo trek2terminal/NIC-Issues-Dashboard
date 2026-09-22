@@ -273,6 +273,13 @@
       transition: border-color .18s ease, background .18s ease, transform .18s ease;
     }
 
+    .upload-zone:hover,
+    .upload-zone.drag {
+      border-color: var(--ref-blue);
+      background: color-mix(in srgb, var(--ref-blue) 7%, var(--ref-surface2));
+      transform: translateY(-1px);
+    }
+
     .upload-zone:focus-visible {
       outline: 2px solid #126dde;
       outline-offset: 3px;
@@ -1234,6 +1241,13 @@
 
     body.dark-theme .upload-zone {
       background: rgba(22, 43, 67, .68);
+    }
+
+    body.dark-theme .upload-zone:hover,
+    body.dark-theme .upload-zone.drag {
+      border-color: var(--ref-blue);
+      background: color-mix(in srgb, var(--ref-blue) 7%, var(--ref-surface2));
+      transform: translateY(-1px);
     }
 
     body.dark-theme .table {
