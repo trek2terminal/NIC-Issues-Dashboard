@@ -1041,6 +1041,20 @@
       text-overflow: ellipsis;
     }
 
+    .class-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+      flex: none;
+    }
+
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
     th {
       background: #f1f6f7;
       color: #49636d;
@@ -2409,6 +2423,7 @@
     let allRows = [];        // full parsed dataset (one object per excel row)
     let filteredRows = [];   // rows after search + status filter
     let currentPage = 1;
+    let classificationColorMap = {};
     let uploadBarTimer = null;
     let classificationChartTimer = null;
     let statusChartTimer = null;
@@ -2828,6 +2843,10 @@
       const topEntries = Object.entries(counts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8);
+      classificationColorMap = {};
+      topEntries.forEach(([label], i) => {
+        classificationColorMap[label] = CLASSIFICATION_COLORS[i % CLASSIFICATION_COLORS.length];
+      });
 
       if (!topEntries.length) {
         el('bars').innerHTML = '<p class="empty">Upload an Excel workbook.</p>';
@@ -2938,11 +2957,11 @@
             <tr>
               <td>${getField(row, COLUMNS.serial) || start + i + 1}</td>
               <td>${formatDate(getField(row, COLUMNS.date))}</td>
-              <td>${toText(getField(row, COLUMNS.classification))}</td>
+              <td><span class="class-dot" style="background:${classificationColorMap[toText(getField(row, COLUMNS.classification))] || 'var(--ref-muted)'}"></span>${toText(getField(row, COLUMNS.classification))}</td>
               <td>${toText(getField(row, COLUMNS.description))}</td>
               <td>${toText(getField(row, COLUMNS.impact))}</td>
-              <td>${formatNumber(toNumber(getField(row, COLUMNS.raised)))}</td>
-              <td>${formatNumber(toNumber(getField(row, COLUMNS.resolved)))}</td>
+              <td class="num">${formatNumber(toNumber(getField(row, COLUMNS.raised)))}</td>
+              <td class="num">${formatNumber(toNumber(getField(row, COLUMNS.resolved)))}</td>
               <td><span class="tag ${statusTagClass(getField(row, COLUMNS.status))}">${toText(getField(row, COLUMNS.status))}</span></td>
             </tr>
           `).join('')
