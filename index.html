@@ -435,6 +435,105 @@
       }
     }
 
+    .onboarding {
+      position: fixed;
+      inset: 0;
+      z-index: 240;
+      display: none;
+    }
+
+    .onboarding.show {
+      display: block;
+    }
+
+    .onboarding-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(3, 10, 19, .66);
+      backdrop-filter: blur(3px);
+      animation: onboardingFade .3s ease;
+    }
+
+    .onboarding-target {
+      position: relative;
+      z-index: 242 !important;
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--ref-blue) 70%, transparent), 0 0 0 9999px rgba(3, 10, 19, .66) !important;
+      transition: box-shadow .3s ease;
+    }
+
+    .onboarding-card {
+      position: fixed;
+      z-index: 243;
+      width: min(330px, calc(100vw - 28px));
+      padding: 18px;
+      border-radius: 14px;
+      background: var(--ref-surface);
+      border: 1px solid color-mix(in srgb, var(--ref-blue) 46%, var(--ref-border));
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .38);
+      animation: onboardingCardIn .38s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .onboarding-kicker {
+      color: var(--ref-blue);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .onboarding-card h2 {
+      margin: 6px 0 5px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      color: var(--ref-text);
+    }
+
+    .onboarding-card p {
+      margin: 0;
+      color: var(--ref-text2);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .onboarding-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .onboarding-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .onboarding-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ref-border);
+    }
+
+    .onboarding-dot.active {
+      width: 18px;
+      border-radius: 99px;
+      background: var(--ref-blue);
+    }
+
+    @keyframes onboardingFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes onboardingCardIn { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 600px) {
+      .onboarding-card {
+        width: min(310px, calc(100vw - 24px));
+      }
+
+      .onboarding-card h2 {
+        font-size: 16px;
+      }
+    }
+
     .loading-card {
       width: min(430px, 100%);
       padding: 22px;
@@ -2178,6 +2277,22 @@
     </div>
   </div>
 
+  <div class="onboarding" id="onboarding">
+    <div class="onboarding-backdrop"></div>
+    <div class="onboarding-card" id="onboardingCard">
+      <div class="onboarding-kicker">Quick tour</div>
+      <h2 id="onboardingTitle"></h2>
+      <p id="onboardingText"></p>
+      <div class="onboarding-footer">
+        <div class="onboarding-dots" id="onboardingDots"></div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-ghost btn-sm" id="onboardingSkip" type="button">Skip</button>
+          <button class="btn btn-primary btn-sm" id="onboardingNext" type="button">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="refresh-dialog" id="refreshDialog">
     <div class="refresh-card">
       <div class="refresh-icon">&#9888;</div>
@@ -2773,6 +2888,123 @@
       void el('themeToggle').offsetWidth;
       el('themeToggle').classList.add('is-turning');
     });
+
+    const onboarding = el('onboarding');
+    const onboardingCard = el('onboardingCard');
+    const onboardingTitle = el('onboardingTitle');
+    const onboardingText = el('onboardingText');
+    const onboardingDots = el('onboardingDots');
+    const onboardingNext = el('onboardingNext');
+    let onboardingIndex = 0;
+    let onboardingActive = false;
+
+    const onboardingSteps = [
+      {
+        selector: '.cards',
+        title: 'Issue summary',
+        text: 'These cards total reported, resolved, completed, and pending issues from your workbook.'
+      },
+      {
+        selector: '.grid',
+        title: 'Charts',
+        text: 'Status and category breakdowns update live from your data - click the small buttons to switch chart views.'
+      },
+      {
+        selector: '.details',
+        title: 'Full record table',
+        text: 'Search, filter by status, and page through every issue row here.'
+      },
+      {
+        selector: '#themeToggle',
+        title: 'Light / dark',
+        text: 'Switch themes anytime - your choice is remembered.'
+      }
+    ];
+
+    function onboardingCompleted() {
+      try {
+        return localStorage.getItem('nic-dashboard-onboarded') === 'true';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function finishOnboarding() {
+      document.querySelectorAll('.onboarding-target').forEach(target => target.classList.remove('onboarding-target'));
+      onboarding.classList.remove('show');
+      onboardingActive = false;
+      try {
+        localStorage.setItem('nic-dashboard-onboarded', 'true');
+      } catch (error) {
+        // File and private browsing modes may block storage.
+      }
+    }
+
+    function positionOnboardingCard(target) {
+      const targetRect = target.getBoundingClientRect();
+      const cardWidth = onboardingCard.offsetWidth;
+      const cardHeight = onboardingCard.offsetHeight;
+      const gap = 14;
+      const maxLeft = window.innerWidth - cardWidth - 14;
+      const maxTop = window.innerHeight - cardHeight - 14;
+      let top = targetRect.bottom + gap;
+      let left = targetRect.left + (targetRect.width - cardWidth) / 2;
+
+      if (top > maxTop) top = targetRect.top - cardHeight - gap;
+      top = Math.max(14, Math.min(top, maxTop));
+      left = Math.max(14, Math.min(left, maxLeft));
+      onboardingCard.style.top = `${top}px`;
+      onboardingCard.style.left = `${left}px`;
+    }
+
+    function showOnboardingStep(index) {
+      const step = onboardingSteps[index];
+      const target = document.querySelector(step.selector);
+      if (!target) return;
+
+      document.querySelectorAll('.onboarding-target').forEach(item => item.classList.remove('onboarding-target'));
+      target.classList.add('onboarding-target');
+      onboardingIndex = index;
+      onboardingTitle.textContent = step.title;
+      onboardingText.textContent = step.text;
+      onboardingDots.innerHTML = onboardingSteps.map((item, dotIndex) =>
+        `<span class="onboarding-dot${dotIndex === index ? ' active' : ''}"></span>`
+      ).join('');
+      onboardingNext.textContent = index === onboardingSteps.length - 1 ? 'Done' : 'Next';
+      onboarding.classList.add('show');
+      requestAnimationFrame(() => positionOnboardingCard(target));
+    }
+
+    function startOnboarding() {
+      if (onboardingActive || onboardingCompleted() || !allRows.length) return;
+      onboardingActive = true;
+      showOnboardingStep(0);
+    }
+
+    onboardingNext.addEventListener('click', () => {
+      if (onboardingIndex >= onboardingSteps.length - 1) {
+        finishOnboarding();
+        return;
+      }
+      showOnboardingStep(onboardingIndex + 1);
+    });
+    el('onboardingSkip').addEventListener('click', finishOnboarding);
+    window.addEventListener('resize', () => {
+      if (!onboardingActive) return;
+      const target = document.querySelector(onboardingSteps[onboardingIndex].selector);
+      if (target) positionOnboardingCard(target);
+    });
+
+    const onboardingObserver = new MutationObserver(() => {
+      if (onboardingActive || !document.body.classList.contains('loaded') || !allRows.length || onboardingCompleted()) return;
+      onboardingActive = true;
+      onboardingObserver.disconnect();
+      window.setTimeout(() => {
+        onboardingActive = false;
+        startOnboarding();
+      }, 280);
+    });
+    onboardingObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
     // ---------------------------------------------------------------
     // Event wiring
