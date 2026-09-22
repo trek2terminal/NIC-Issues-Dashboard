@@ -1827,6 +1827,9 @@
       border-color: var(--ref-blue);
       color: var(--ref-text);
     }
+    .chart-cycle-button:active {
+      transform: scale(.96);
+    }
 
     .chart-cycle-button:focus-visible {
       outline: 2px solid var(--ref-blue);
@@ -1840,6 +1843,24 @@
     }
 
     .chart-cycle-button.auto.is-active {
+    .skeleton-row td {
+      position: relative;
+      overflow: hidden;
+      background: var(--ref-surface2);
+    }
+
+    .skeleton-row td::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ref-border) 60%, transparent), transparent);
+      animation: skeletonShine 1.3s ease-in-out infinite;
+    }
+
+    @keyframes skeletonShine {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
       border-color: color-mix(in srgb, var(--ref-teal) 45%, var(--ref-border));
       background: color-mix(in srgb, var(--ref-teal) 10%, var(--ref-surface2));
       color: var(--ref-teal);
@@ -2637,6 +2658,12 @@
     function showLoading() {
       setLoadStep('read', 8, 'Reading workbook', 'Opening the Excel file locally.');
       el('loadingOverlay').classList.add('show');
+      const rowsBody = document.getElementById('rows');
+      if (rowsBody && !allRows.length) {
+        rowsBody.innerHTML = Array.from({ length: 6 }).map(() =>
+          `<tr class="skeleton-row">${'<td>&nbsp;</td>'.repeat(8)}</tr>`
+        ).join('');
+      }
     }
 
     function hideLoading() {
