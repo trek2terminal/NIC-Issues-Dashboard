@@ -1672,6 +1672,12 @@
       border-radius: 50%;
       background: var(--ref-teal);
       box-shadow: 0 0 0 4px color-mix(in srgb, var(--ref-teal) 14%, transparent);
+      animation: liveDotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes liveDotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ref-teal) 45%, transparent); }
+      50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--ref-teal) 0%, transparent); }
     }
 
     .file-chip,
@@ -1863,8 +1869,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      padding: 4px 12px 12px;
+      gap: 22px;
+      padding: 4px 4px 12px;
     }
 
     .classification-donut {
@@ -1887,7 +1893,7 @@
     }
 
     .classification-donut-view .legend {
-      max-width: 190px;
+      max-width: 230px;
       justify-content: flex-start;
       align-content: center;
       margin: 0;
@@ -1916,8 +1922,8 @@
       align-items: center;
       min-width: 0;
       overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.3;
     }
 
     .classification-donut-view .legend .legend-value {
@@ -2516,6 +2522,20 @@
       return Number(value || 0).toLocaleString('en-IN');
     }
 
+    function animateCount(id, targetValue) {
+      const el2 = document.getElementById(id);
+      const start = 0;
+      const duration = 700;
+      const startTime = performance.now();
+      function tick(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el2.textContent = formatNumber(Math.round(start + (targetValue - start) * eased));
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
     function formatDate(value) {
       if (!value) return '';
       // Excel dates parsed by SheetJS with cellDates:true arrive as JS Date objects.
@@ -2746,11 +2766,11 @@
       const pending = Math.max(0, totalRaised - totalResolved);
       const otherRows = allRows.length - completedRows;
 
-      el('kpiRaised').textContent = formatNumber(totalRaised);
-      el('kpiResolved').textContent = formatNumber(totalResolved);
-      el('kpiCompleted').textContent = formatNumber(completedRows);
-      el('kpiPending').textContent = formatNumber(pending);
-      el('kpiOther').textContent = formatNumber(otherRows);
+      animateCount('kpiRaised', totalRaised);
+      animateCount('kpiResolved', totalResolved);
+      animateCount('kpiCompleted', completedRows);
+      animateCount('kpiPending', pending);
+      animateCount('kpiOther', otherRows);
 
       if (!allRows.length) return { totalRaised, totalResolved };
 
