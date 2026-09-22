@@ -16,7 +16,7 @@
       margin: 0;
       background: #eef3f6;
       color: #172c3d;
-      font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+      font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
       font-size: 13px;
     }
 
@@ -74,7 +74,7 @@
     .title h1 {
       margin: 0;
       color: #173b66;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 16px;
       letter-spacing: .1px;
     }
@@ -162,18 +162,27 @@
       position: relative;
       overflow: hidden;
       padding: 37px 24px 25px;
-      border-left: 4px solid #25a9df;
       background: linear-gradient(120deg, #ffffff 0%, #f2f8fc 100%);
+    }
+
+    .welcome-copy::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(var(--ref-blue2), #2eb8e7);
     }
 
     .welcome-copy::after {
       content: '';
       position: absolute;
-      width: 190px;
-      height: 190px;
-      right: -12px;
-      top: -78px;
-      border: 26px solid rgba(52, 139, 223, .08);
+      width: 260px;
+      height: 260px;
+      right: -80px;
+      top: -100px;
+      border: 35px solid color-mix(in srgb, var(--ref-blue) 7%, transparent);
       border-radius: 50%;
     }
 
@@ -194,7 +203,7 @@
       max-width: 620px;
       margin: 0;
       color: #16365f;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 31px;
       line-height: 1.08;
     }
@@ -244,7 +253,7 @@
     .welcome-upload h3 {
       margin: 0;
       color: #203e5f;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 13px;
     }
 
@@ -355,7 +364,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 14px;
       font-weight: 700;
     }
@@ -579,7 +588,7 @@
 
     .card b {
       display: block;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 27px;
     }
 
@@ -618,7 +627,7 @@
     .box h2 {
       margin: 0 0 10px;
       color: #203e4d;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 15px;
       letter-spacing: .1px;
     }
@@ -656,7 +665,7 @@
 
     .gauge b {
       color: var(--ref-text);
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 21px;
       line-height: 1;
     }
@@ -978,7 +987,7 @@
     }
 
     .welcome-copy::after {
-      border-color: color-mix(in srgb, var(--ref-blue) 9%, transparent);
+      border-color: color-mix(in srgb, var(--ref-blue) 7%, transparent);
     }
 
     .eyebrow,
@@ -1209,7 +1218,7 @@
     }
 
     body.dark-theme .welcome-copy::after {
-      border-color: rgba(93, 181, 244, .1);
+      border-color: color-mix(in srgb, var(--ref-blue) 7%, transparent);
     }
 
     body.dark-theme .b { background: #163753; color: #77c8ff; }
@@ -1332,7 +1341,7 @@
 
     .dashboard .upload b {
       color: var(--ref-text);
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 12px;
       letter-spacing: .01em;
     }
@@ -1370,7 +1379,7 @@
     .dashboard-heading h2 {
       margin: 0;
       color: var(--ref-text);
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: clamp(20px, 2.2vw, 28px);
       letter-spacing: -.035em;
     }
@@ -1715,7 +1724,7 @@
 
     .detailhead h2 {
       margin: 0;
-      font-family: 'Space Grotesk', Arial, sans-serif;
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
       font-size: 17px;
     }
 
