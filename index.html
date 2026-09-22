@@ -952,10 +952,19 @@
       position: relative;
     }
 
+    .bc { cursor: default; }
+    .bc:hover .bar {
+      filter: brightness(1.08);
+      transform: scaleY(1.015);
+    }
+    .bc .bar {
+      transform-origin: bottom;
+    }
+
     .bar {
       width: 70%;
       border-radius: 5px 5px 0 0;
-      transition: height .25s ease;
+      transition: height .25s ease, filter .2s ease, transform .2s ease;
     }
 
     .bc span {
@@ -1959,6 +1968,17 @@
       opacity: 1;
       transform: none;
       transition-delay: 0s;
+    }
+
+    .classification-donut,
+    .donut {
+      transition: transform .25s cubic-bezier(.2, .8, .2, 1), filter .25s ease;
+    }
+
+    .classification-donut:hover,
+    .donut:hover {
+      transform: scale(1.03);
+      filter: brightness(1.03);
     }
 
     .status-stage .donut {
@@ -2965,7 +2985,13 @@
       });
 
       currentPage = 1;
-      renderTable();
+      const tbody = document.getElementById('rows');
+      tbody.style.transition = 'opacity 120ms ease';
+      tbody.style.opacity = '0';
+      setTimeout(() => {
+        renderTable();
+        tbody.style.opacity = '1';
+      }, 120);
     }
 
     function renderTable() {
@@ -3217,7 +3243,13 @@
     el('prevPage').addEventListener('click', () => {
       if (currentPage > 1) {
         currentPage--;
-        renderTable();
+        const tbody = document.getElementById('rows');
+        tbody.style.transition = 'opacity 120ms ease';
+        tbody.style.opacity = '0';
+        setTimeout(() => {
+          renderTable();
+          tbody.style.opacity = '1';
+        }, 120);
       }
     });
 
@@ -3225,7 +3257,13 @@
       const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
       if (currentPage < totalPages) {
         currentPage++;
-        renderTable();
+        const tbody = document.getElementById('rows');
+        tbody.style.transition = 'opacity 120ms ease';
+        tbody.style.opacity = '0';
+        setTimeout(() => {
+          renderTable();
+          tbody.style.opacity = '1';
+        }, 120);
       }
     });
 
