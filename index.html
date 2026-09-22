@@ -2598,6 +2598,16 @@
 
         allRows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false, cellDates: true });
         headerMap = buildHeaderMap(allRows[0]);
+        const requiredColumns = [COLUMNS.serial, COLUMNS.classification, COLUMNS.description, COLUMNS.status];
+        const matchedColumns = requiredColumns.filter(column => {
+          const wanted = normalizeKey(column);
+          return Object.keys(headerMap).some(key => key.includes(wanted) || wanted.includes(key));
+        });
+        if (matchedColumns.length < 3) {
+          hideLoading();
+          showToast('Workbook not recognized', 'This file does not look like the NIC installation issues workbook. Please choose the relevant Excel file.', 'error');
+          return;
+        }
         allRows = allRows.filter(row => toText(getField(row, COLUMNS.serial)) !== '');
 
         setLoadStep('render', 82, 'Preparing issue dashboard', 'Building field issue cards, charts, and records.');
