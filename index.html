@@ -953,6 +953,69 @@
       opacity: .75;
     }
 
+    .card-trend {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .card-trend svg {
+      display: block;
+      width: 86px;
+      height: 28px;
+      overflow: visible;
+      color: currentColor;
+    }
+
+    .card-trend path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .card-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 3px 5px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      background: color-mix(in srgb, var(--ref-teal) 12%, transparent);
+      color: var(--ref-teal);
+    }
+
+    .card .card-delta {
+      display: inline-flex;
+      margin: 0;
+      font-weight: 800;
+    }
+
+    .card-delta.down {
+      background: color-mix(in srgb, var(--ref-bad) 10%, transparent);
+      color: var(--ref-bad);
+    }
+
+    .card-delta.neutral {
+      background: color-mix(in srgb, var(--ref-muted) 12%, transparent);
+      color: var(--ref-muted);
+    }
+
+    .card-trend path {
+      animation: sparklineDraw .7s ease both;
+    }
+
+    @keyframes sparklineDraw {
+      from { stroke-dasharray: 180; stroke-dashoffset: 180; opacity: .35; }
+      to { stroke-dasharray: 180; stroke-dashoffset: 0; opacity: 1; }
+    }
+
     .b { background: #e4f4f5; color: #14777c; }
     .g { background: #e8f5df; color: #4b8326; }
     .p { background: #eaf0f5; color: #315d7a; }
@@ -2536,11 +2599,11 @@
     </section>
 
     <section class="cards">
-      <div class="card b"><b id="kpiRaised">0</b><span>Issues Reported</span><small>Total issues reported by the field team</small></div>
-      <div class="card g"><b id="kpiResolved">0</b><span>Issues Resolved</span><small>Total issues marked as resolved</small></div>
-      <div class="card p"><b id="kpiCompleted">0</b><span>Completed Records</span><small>Rows with status marked Completed</small></div>
-      <div class="card o"><b id="kpiPending">0</b><span>Pending Issues</span><small>Reported issues not yet resolved</small></div>
-      <div class="card r"><b id="kpiOther">0</b><span>In Progress / Other</span><small>All remaining field issue statuses</small></div>
+      <div class="card b"><b id="kpiRaised">0</b><span>Issues Reported</span><small>Total issues reported by the field team</small><div class="card-trend"><svg id="kpiRaisedSparkline" viewBox="0 0 86 28" aria-hidden="true"><path></path></svg><span class="card-delta neutral" id="kpiRaisedDelta">0.0%</span></div></div>
+      <div class="card g"><b id="kpiResolved">0</b><span>Issues Resolved</span><small>Total issues marked as resolved</small><div class="card-trend"><svg id="kpiResolvedSparkline" viewBox="0 0 86 28" aria-hidden="true"><path></path></svg><span class="card-delta neutral" id="kpiResolvedDelta">0.0%</span></div></div>
+      <div class="card p"><b id="kpiCompleted">0</b><span>Completed Records</span><small>Rows with status marked Completed</small><div class="card-trend"><svg id="kpiCompletedSparkline" viewBox="0 0 86 28" aria-hidden="true"><path></path></svg><span class="card-delta neutral" id="kpiCompletedDelta">0.0%</span></div></div>
+      <div class="card o"><b id="kpiPending">0</b><span>Pending Issues</span><small>Reported issues not yet resolved</small><div class="card-trend"><svg id="kpiPendingSparkline" viewBox="0 0 86 28" aria-hidden="true"><path></path></svg><span class="card-delta neutral" id="kpiPendingDelta">0.0%</span></div></div>
+      <div class="card r"><b id="kpiOther">0</b><span>In Progress / Other</span><small>All remaining field issue statuses</small><div class="card-trend"><svg id="kpiOtherSparkline" viewBox="0 0 86 28" aria-hidden="true"><path></path></svg><span class="card-delta neutral" id="kpiOtherDelta">0.0%</span></div></div>
     </section>
 
     <section class="grid">
@@ -2822,6 +2885,37 @@
       requestAnimationFrame(tick);
     }
 
+    function renderSparkline(sparklineId, deltaId, values) {
+      const source = values.slice(-14);
+      const pointCount = Math.min(7, source.length || 1);
+      const bucketSize = Math.max(1, Math.ceil(source.length / pointCount));
+      const points = [];
+
+      for (let index = 0; index < source.length; index += bucketSize) {
+        const bucket = source.slice(index, index + bucketSize);
+        points.push(bucket.reduce((sum, value) => sum + value, 0));
+      }
+
+      if (!points.length) points.push(0);
+      const maxValue = Math.max(...points, 1);
+      const minValue = Math.min(...points);
+      const range = Math.max(maxValue - minValue, 1);
+      const path = points.map((value, index) => {
+        const x = points.length === 1 ? 43 : index * (86 / (points.length - 1));
+        const y = 24 - ((value - minValue) / range) * 20;
+        return `${index ? 'L' : 'M'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+      }).join(' ');
+
+      document.getElementById(sparklineId).querySelector('path').setAttribute('d', path);
+      const first = points[0];
+      const last = points[points.length - 1];
+      const delta = first === 0 ? (last === 0 ? 0 : 100) : ((last - first) / Math.abs(first)) * 100;
+      const deltaElement = document.getElementById(deltaId);
+      const roundedDelta = Math.round(Math.abs(delta) * 10) / 10;
+      deltaElement.className = `card-delta ${delta > 0 ? '' : delta < 0 ? 'down' : 'neutral'}`.trim();
+      deltaElement.textContent = `${delta > 0 ? '\u2191 +' : delta < 0 ? '\u2193 -' : '\u2192 '}${roundedDelta.toFixed(1)}%`;
+    }
+
     function formatDate(value) {
       if (!value) return '';
       // Excel dates parsed by SheetJS with cellDates:true arrive as JS Date objects.
@@ -3069,6 +3163,15 @@
       animateCount('kpiCompleted', completedRows);
       animateCount('kpiPending', pendingRows);
       animateCount('kpiOther', otherRows);
+
+      renderSparkline('kpiRaisedSparkline', 'kpiRaisedDelta', allRows.map(row => toNumber(getField(row, COLUMNS.raised))));
+      renderSparkline('kpiResolvedSparkline', 'kpiResolvedDelta', allRows.map(row => toNumber(getField(row, COLUMNS.resolved))));
+      renderSparkline('kpiCompletedSparkline', 'kpiCompletedDelta', allRows.map(row => statusBucket(getField(row, COLUMNS.status)) === 'completed' ? 1 : 0));
+      renderSparkline('kpiPendingSparkline', 'kpiPendingDelta', allRows.map(row => statusBucket(getField(row, COLUMNS.status)) === 'pending' ? 1 : 0));
+      renderSparkline('kpiOtherSparkline', 'kpiOtherDelta', allRows.map(row => {
+        const bucket = statusBucket(getField(row, COLUMNS.status));
+        return bucket !== 'completed' && bucket !== 'pending' ? 1 : 0;
+      }));
 
       if (!allRows.length) return { totalRaised, totalResolved };
 
