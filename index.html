@@ -2564,8 +2564,8 @@
         if (!sheet) throw new Error('No readable worksheet was found in this workbook.');
 
         allRows = XLSX.utils.sheet_to_json(sheet, { defval: '', raw: false, cellDates: true });
-        allRows = allRows.filter(row => toText(getField(row, COLUMNS.serial)) !== '');
         headerMap = buildHeaderMap(allRows[0]);
+        allRows = allRows.filter(row => toText(getField(row, COLUMNS.serial)) !== '');
 
         setLoadStep('render', 82, 'Preparing issue dashboard', 'Building field issue cards, charts, and records.');
         el('name').textContent = file.name;
