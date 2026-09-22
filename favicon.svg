@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NIC installation dashboard favicon">
+  <defs>
+    <linearGradient id="iconBlue" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#3bbaf7"/>
+      <stop offset="100%" stop-color="#1d7ef2"/>
+    </linearGradient>
+    <linearGradient id="iconTeal" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#35d6b7"/>
+      <stop offset="100%" stop-color="#1bb7a2"/>
+    </linearGradient>
+  </defs>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 46V18h8l14 21V18h8v28h-8L22 25v21h-8z" fill="url(#iconBlue)"/>
+    <path d="M16 42l9-10 9 7 14-20" stroke="url(#iconTeal)" stroke-width="4"/>
+    <circle cx="48" cy="19" r="4" fill="url(#iconTeal)" stroke="none"/>
+  </g>
+</svg>
