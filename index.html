@@ -2060,6 +2060,110 @@
       box-shadow: var(--ref-shadow);
     }
 
+    .timeline-panel {
+      margin-top: 14px;
+    }
+
+    .timeline-caption {
+      margin: 6px 0 0;
+      color: var(--ref-muted);
+      font-size: 10px;
+    }
+
+    .timeline-stage {
+      position: relative;
+      height: 250px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-top: 1px solid color-mix(in srgb, var(--ref-border) 72%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--ref-border) 72%, transparent);
+      background: repeating-linear-gradient(to bottom, transparent 0 48px, color-mix(in srgb, var(--ref-border) 48%, transparent) 49px 50px);
+    }
+
+    .timeline-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .timeline-svg .timeline-area {
+      opacity: .16;
+      transition: opacity .3s ease;
+    }
+
+    .timeline-svg .timeline-line {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 3px 4px color-mix(in srgb, currentColor 18%, transparent));
+      stroke-dasharray: 1400;
+      stroke-dashoffset: 1400;
+      animation: timelineLineDraw .9s cubic-bezier(.2, .8, .2, 1) forwards;
+    }
+
+    .timeline-svg .timeline-point {
+      stroke: var(--ref-surface);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+      animation: timelinePointIn .35s ease both;
+    }
+
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 12px 0;
+      color: var(--ref-muted);
+      font-size: 9px;
+    }
+
+    .timeline-labels span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .timeline-legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 10px;
+      color: var(--ref-text2);
+      font-size: 10px;
+    }
+
+    .timeline-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .timeline-legend i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .timeline-legend .reported { color: #1b73b6; }
+    .timeline-legend .resolved { color: var(--ref-teal); }
+
+    @keyframes timelineLineDraw { to { stroke-dashoffset: 0; } }
+    @keyframes timelinePointIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+
+    @media (max-width: 700px) {
+      .timeline-stage {
+        height: 210px;
+      }
+
+      .timeline-labels {
+        padding-inline: 5px;
+      }
+    }
+
     .box h2 {
       display: flex;
       align-items: center;
@@ -2666,6 +2770,41 @@
 
     </section>
 
+    <article class="box timeline-panel">
+      <div class="chart-panel-head">
+        <div>
+          <h2>Issues Reported vs Resolved Over Time</h2>
+          <p class="timeline-caption" id="timelineCaption">Upload a workbook to see issue movement over time.</p>
+        </div>
+        <div class="chart-cycle-controls" aria-label="Timeline chart controls">
+          <button class="chart-cycle-button is-active" type="button" data-timeline-view="line">Line</button>
+          <button class="chart-cycle-button" type="button" data-timeline-view="area">Area</button>
+        </div>
+      </div>
+      <div class="timeline-stage">
+        <svg id="timelineChart" class="timeline-svg" viewBox="0 0 1000 250" preserveAspectRatio="none" role="img" aria-label="Issues reported and resolved over time">
+          <defs>
+            <linearGradient id="timelineReportedFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#1b73b6" stop-opacity=".3"/>
+              <stop offset="1" stop-color="#1b73b6" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="timelineResolvedFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="var(--ref-teal)" stop-opacity=".25"/>
+              <stop offset="1" stop-color="var(--ref-teal)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g id="timelineAreas"></g>
+          <g id="timelineLines"></g>
+          <g id="timelinePoints"></g>
+        </svg>
+      </div>
+      <div class="timeline-labels" id="timelineLabels"></div>
+      <div class="timeline-legend" aria-label="Timeline legend">
+        <span class="reported"><i></i>Reported</span>
+        <span class="resolved"><i></i>Resolved</span>
+      </div>
+    </article>
+
     <article class="box details">
       <div class="detailhead">
         <h2>NIC Field Installation Issues</h2>
@@ -2782,6 +2921,7 @@
     let classificationChartTimer = null;
     let statusChartTimer = null;
     let gaugeChartTimer = null;
+    let timelineView = 'line';
     const PAGE_SIZE = 10;
 
     // The exact column headers used in the source workbook.
@@ -2926,6 +3066,126 @@
         return `${day}-${month}-${year}`;
       }
       return toText(value);
+    }
+
+    function parseTimelineDate(value) {
+      if (value instanceof Date && !isNaN(value)) return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        const serialDate = new Date(1899, 11, 30);
+        serialDate.setDate(serialDate.getDate() + value);
+        return serialDate;
+      }
+      const text = toText(value);
+      const dayFirst = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+      if (dayFirst) {
+        const date = new Date(Number(dayFirst[3]), Number(dayFirst[2]) - 1, Number(dayFirst[1]));
+        return date.getFullYear() === Number(dayFirst[3]) && date.getMonth() === Number(dayFirst[2]) - 1 && date.getDate() === Number(dayFirst[1]) ? date : null;
+      }
+      const isoDate = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (isoDate) {
+        const date = new Date(Number(isoDate[1]), Number(isoDate[2]) - 1, Number(isoDate[3]));
+        return date.getFullYear() === Number(isoDate[1]) && date.getMonth() === Number(isoDate[2]) - 1 && date.getDate() === Number(isoDate[3]) ? date : null;
+      }
+      const parsed = new Date(text);
+      return isNaN(parsed) ? null : new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+    }
+
+    function smoothTimelinePath(points) {
+      if (points.length < 2) return points.length ? `M ${points[0].x} ${points[0].y}` : '';
+      let path = `M ${points[0].x} ${points[0].y}`;
+      for (let index = 1; index < points.length; index++) {
+        const previous = points[index - 1];
+        const current = points[index];
+        const midpoint = (Number(previous.x) + Number(current.x)) / 2;
+        path += ` C ${midpoint} ${previous.y}, ${midpoint} ${current.y}, ${current.x} ${current.y}`;
+      }
+      return path;
+    }
+
+    function setTimelineView(view) {
+      timelineView = view === 'area' ? 'area' : 'line';
+      document.querySelectorAll('[data-timeline-view]').forEach(button => {
+        button.classList.toggle('is-active', button.dataset.timelineView === timelineView);
+      });
+      document.querySelectorAll('#timelineAreas .timeline-area').forEach(area => {
+        area.style.opacity = timelineView === 'area' ? '.22' : '0';
+      });
+    }
+
+    function renderTimeline() {
+      const datedRows = allRows.map(row => ({
+        date: parseTimelineDate(getField(row, COLUMNS.date)),
+        reported: toNumber(getField(row, COLUMNS.raised)),
+        resolved: toNumber(getField(row, COLUMNS.resolved))
+      })).filter(item => item.date);
+      const areas = document.getElementById('timelineAreas');
+      const lines = document.getElementById('timelineLines');
+      const pointsGroup = document.getElementById('timelinePoints');
+      const labels = document.getElementById('timelineLabels');
+      const caption = document.getElementById('timelineCaption');
+      areas.innerHTML = '';
+      lines.innerHTML = '';
+      pointsGroup.innerHTML = '';
+      labels.innerHTML = '';
+
+      if (!datedRows.length) {
+        caption.textContent = allRows.length ? 'No usable dates found in this workbook.' : 'Upload a workbook to see issue movement over time.';
+        setTimelineView(timelineView);
+        return;
+      }
+
+      datedRows.sort((a, b) => a.date - b.date);
+      const rangeDays = (datedRows[datedRows.length - 1].date - datedRows[0].date) / 86400000;
+      const useMonths = rangeDays > 90;
+      const buckets = new Map();
+      datedRows.forEach(item => {
+        const date = new Date(item.date);
+        let key;
+        let label;
+        if (useMonths) {
+          key = `${date.getFullYear()}-${date.getMonth()}`;
+          label = date.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+        } else {
+          const day = date.getDay();
+          date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
+          key = date.toISOString().slice(0, 10);
+          label = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        }
+        const bucket = buckets.get(key) || { label, reported: 0, resolved: 0 };
+        bucket.reported += item.reported;
+        bucket.resolved += item.resolved;
+        buckets.set(key, bucket);
+      });
+
+      const values = [...buckets.values()];
+      const maxValue = Math.max(...values.flatMap(item => [item.reported, item.resolved]), 1);
+      const chartWidth = 920;
+      const chartLeft = 40;
+      const chartTop = 18;
+      const chartHeight = 196;
+      const chartPoints = values.map((item, index) => ({
+        x: chartLeft + (values.length === 1 ? chartWidth / 2 : index * chartWidth / (values.length - 1)),
+        reportedY: chartTop + chartHeight - (item.reported / maxValue) * chartHeight,
+        resolvedY: chartTop + chartHeight - (item.resolved / maxValue) * chartHeight
+      }));
+      const reportedPoints = chartPoints.map(point => ({ x: point.x.toFixed(1), y: point.reportedY.toFixed(1) }));
+      const resolvedPoints = chartPoints.map(point => ({ x: point.x.toFixed(1), y: point.resolvedY.toFixed(1) }));
+      const reportedPath = smoothTimelinePath(reportedPoints);
+      const resolvedPath = smoothTimelinePath(resolvedPoints);
+      const baseline = chartTop + chartHeight;
+
+      areas.innerHTML = `
+        <path class="timeline-area" fill="url(#timelineReportedFill)" d="${reportedPath} L ${reportedPoints.at(-1).x} ${baseline} L ${reportedPoints[0].x} ${baseline} Z"></path>
+        <path class="timeline-area" fill="url(#timelineResolvedFill)" d="${resolvedPath} L ${resolvedPoints.at(-1).x} ${baseline} L ${resolvedPoints[0].x} ${baseline} Z"></path>`;
+      lines.innerHTML = `
+        <path class="timeline-line" style="color:#1b73b6;stroke:#1b73b6" d="${reportedPath}"></path>
+        <path class="timeline-line" style="color:var(--ref-teal);stroke:var(--ref-teal);animation-delay:90ms" d="${resolvedPath}"></path>`;
+      pointsGroup.innerHTML = chartPoints.map((point, index) => `
+        <circle class="timeline-point" fill="#1b73b6" cx="${point.x}" cy="${point.reportedY}" r="4" style="animation-delay:${index * 35}ms"></circle>
+        <circle class="timeline-point" fill="var(--ref-teal)" cx="${point.x}" cy="${point.resolvedY}" r="4" style="animation-delay:${index * 35 + 90}ms"></circle>`).join('');
+      labels.innerHTML = values.map(item => `<span title="${item.label}">${item.label}</span>`).join('');
+      caption.textContent = `${useMonths ? 'Monthly' : 'Weekly'} totals across ${values.length} ${useMonths ? 'months' : 'periods'}.`;
+      setTimelineView(timelineView);
     }
 
     // Groups a raw status string into one of four buckets used for
@@ -3130,6 +3390,7 @@
       setClassificationChartView('bars');
       setStatusChartView('donut');
       setGaugeChartView('donut');
+      setTimelineView('line');
       el('dashboardUpload').classList.remove('is-settled');
       document.body.classList.remove('loaded');
       render();
@@ -3433,6 +3694,7 @@
       renderDonut();
       renderGauge(totalRaised, totalResolved);
       renderBars();
+      renderTimeline();
       if (allRows.length) {
         startStatusChartRotation('donut');
         startClassificationChartRotation('bars');
@@ -3649,6 +3911,9 @@
     });
     document.querySelectorAll('[data-gauge-chart-view]').forEach(button => {
       button.addEventListener('click', () => startGaugeChartRotation(button.dataset.gaugeChartView));
+    });
+    document.querySelectorAll('[data-timeline-view]').forEach(button => {
+      button.addEventListener('click', () => setTimelineView(button.dataset.timelineView));
     });
     el('search').addEventListener('input', applyFilters);
     el('statusFilter').addEventListener('change', applyFilters);
