@@ -155,6 +155,97 @@
       }
     }
 
+    .activity-strip {
+      position: relative;
+      z-index: 1;
+      width: calc(100% - 24px);
+      max-width: none;
+      min-height: 34px;
+      margin: 10px auto 0;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border: 1px solid var(--ref-border);
+      border-radius: 9px;
+      background: color-mix(in srgb, var(--ref-surface) 88%, transparent);
+      box-shadow: var(--ref-shadow2);
+    }
+
+    .activity-title {
+      flex: none;
+      color: var(--ref-muted);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .activity-window {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .activity-item {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      color: var(--ref-text2);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .activity-item.is-active {
+      display: flex;
+      animation: activityFade 3.8s ease both;
+    }
+
+    .activity-dot {
+      width: 7px;
+      height: 7px;
+      flex: none;
+      border-radius: 50%;
+    }
+
+    .activity-dot.completed { background: #49b95d; }
+    .activity-dot.progress { background: #ff9f43; }
+    .activity-dot.pending { background: #e0454f; }
+    .activity-dot.other { background: #a6b0bd; }
+
+    .activity-item strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-status {
+      flex: none;
+      color: var(--ref-text2);
+      font-weight: 800;
+    }
+
+    .activity-age {
+      flex: none;
+      color: var(--ref-muted);
+    }
+
+    @keyframes activityFade {
+      0% { opacity: 0; transform: translateY(4px); }
+      12%, 82% { opacity: 1; transform: none; }
+      100% { opacity: 0; transform: translateY(-4px); }
+    }
+
+    @media (max-width: 600px) {
+      .activity-strip {
+        margin-top: 7px;
+      }
+
+      .activity-title {
+        font-size: 8px;
+      }
+    }
+
     .file-chip {
       display: none;
       align-items: center;
@@ -389,6 +480,10 @@
 
     body.loaded .dashboard {
       display: block;
+    }
+
+    body.loaded .activity-strip {
+      display: flex;
     }
 
     .dashboard-tools {
@@ -2154,6 +2249,63 @@
     @keyframes timelineLineDraw { to { stroke-dashoffset: 0; } }
     @keyframes timelinePointIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
 
+    .resolution-speed-panel {
+      margin-top: 14px;
+    }
+
+    .resolution-speed-subtitle {
+      margin: 6px 0 0;
+      color: var(--ref-muted);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .resolution-speed-bars {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .resolution-speed-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 34px;
+      align-items: center;
+      gap: 10px;
+      color: var(--ref-text2);
+      font-size: 10px;
+    }
+
+    .resolution-speed-label {
+      white-space: nowrap;
+    }
+
+    .resolution-speed-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--ref-surface3);
+    }
+
+    .resolution-speed-fill {
+      height: 100%;
+      min-width: 4px;
+      border-radius: inherit;
+      transform-origin: left;
+      animation: resolutionSpeedIn .65s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .resolution-speed-count {
+      color: var(--ref-text);
+      font-weight: 800;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @keyframes resolutionSpeedIn {
+      from { opacity: 0; transform: scaleX(0); }
+      to { opacity: 1; transform: scaleX(1); }
+    }
+
     @media (max-width: 700px) {
       .timeline-stage {
         height: 210px;
@@ -2161,6 +2313,11 @@
 
       .timeline-labels {
         padding-inline: 5px;
+      }
+
+      .resolution-speed-row {
+        grid-template-columns: 78px 1fr 28px;
+        gap: 7px;
       }
     }
 
@@ -2650,6 +2807,13 @@
     </div>
   </header>
 
+  <section class="activity-strip" aria-live="polite" aria-label="Recent activity">
+    <span class="activity-title">Recent Activity</span>
+    <div class="activity-window" id="activityTicker">
+      <span class="activity-item is-active"><span class="activity-dot other"></span><strong>Upload a workbook to see recent updates</strong></span>
+    </div>
+  </section>
+
   <section class="welcome">
     <div class="welcome-copy">
       <p class="eyebrow">NIC installation operations</p>
@@ -2805,6 +2969,16 @@
       </div>
     </article>
 
+    <article class="box resolution-speed-panel">
+      <div class="chart-panel-head">
+        <div>
+          <h2>Resolution Speed</h2>
+          <p class="resolution-speed-subtitle" id="resolutionSpeedSubtitle">How long unresolved issues have remained open, grouped by age.</p>
+        </div>
+      </div>
+      <div class="resolution-speed-bars" id="resolutionSpeedChart"></div>
+    </article>
+
     <article class="box details">
       <div class="detailhead">
         <h2>NIC Field Installation Issues</h2>
@@ -2921,6 +3095,7 @@
     let classificationChartTimer = null;
     let statusChartTimer = null;
     let gaugeChartTimer = null;
+    let activityTimer = null;
     let timelineView = 'line';
     const PAGE_SIZE = 10;
 
@@ -3188,6 +3363,121 @@
       setTimelineView(timelineView);
     }
 
+    function renderResolutionSpeed() {
+      const chart = document.getElementById('resolutionSpeedChart');
+      const subtitle = document.getElementById('resolutionSpeedSubtitle');
+      const buckets = [
+        { label: 'Same day', min: 0, max: 0, color: 'var(--ref-teal)' },
+        { label: '1-3 days', min: 1, max: 3, color: '#1b73b6' },
+        { label: '4-7 days', min: 4, max: 7, color: '#ff9f43' },
+        { label: '8+ days', min: 8, max: Infinity, color: 'var(--ref-bad)' }
+      ];
+      const today = new Date();
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      let explicitResolutionDateField = '';
+      const sampleRow = allRows.find(row => Object.keys(row).some(key => {
+        const normalized = normalizeKey(key);
+        return /(resolution|resolved|closed|closure).*date|date.*(resolution|resolved|closed|closure)/.test(normalized);
+      }));
+      if (sampleRow) {
+        explicitResolutionDateField = Object.keys(sampleRow).find(key => {
+          const normalized = normalizeKey(key);
+          return /(resolution|resolved|closed|closure).*date|date.*(resolution|resolved|closed|closure)/.test(normalized);
+        }) || '';
+      }
+
+      let measuredRows = 0;
+      allRows.forEach(row => {
+        const raisedDate = parseTimelineDate(getField(row, COLUMNS.date));
+        if (!raisedDate) return;
+        const resolvedDate = explicitResolutionDateField ? parseTimelineDate(row[explicitResolutionDateField]) : null;
+        const isUnresolved = statusBucket(getField(row, COLUMNS.status)) !== 'completed';
+        if (explicitResolutionDateField && !resolvedDate) return;
+        if (!explicitResolutionDateField && !isUnresolved) return;
+        const endDate = resolvedDate || todayDate;
+        const days = Math.max(0, Math.floor((endDate - raisedDate) / 86400000));
+        const bucket = buckets.find(item => days >= item.min && days <= item.max);
+        if (bucket) {
+          bucket.count = (bucket.count || 0) + 1;
+          measuredRows++;
+        }
+      });
+
+      const maxCount = Math.max(...buckets.map(bucket => bucket.count || 0), 1);
+      chart.innerHTML = measuredRows
+        ? buckets.map((bucket, index) => `
+            <div class="resolution-speed-row">
+              <span class="resolution-speed-label">${bucket.label}</span>
+              <div class="resolution-speed-track"><div class="resolution-speed-fill" style="width:${Math.max(0, ((bucket.count || 0) / maxCount) * 100)}%;background:${bucket.color};animation-delay:${index * 70}ms"></div></div>
+              <span class="resolution-speed-count">${bucket.count || 0}</span>
+            </div>
+          `).join('')
+        : '<p class="empty">No dated unresolved issues to measure.</p>';
+      subtitle.textContent = explicitResolutionDateField
+        ? 'Time from the issue date to the workbook\'s resolution date, grouped by duration.'
+        : 'Age of unresolved issues from their issue date to today, grouped by duration.';
+    }
+
+    function renderRecentActivity() {
+      const ticker = document.getElementById('activityTicker');
+      clearInterval(activityTimer);
+      activityTimer = null;
+      const activities = allRows.map(row => ({
+        row,
+        date: parseTimelineDate(getField(row, COLUMNS.date)),
+        status: statusBucket(getField(row, COLUMNS.status)),
+        label: toText(getField(row, COLUMNS.status)) || 'Updated'
+      })).filter(item => item.date)
+        .sort((a, b) => b.date - a.date)
+        .slice(0, 6);
+
+      if (!activities.length) {
+        ticker.innerHTML = '<span class="activity-item is-active"><span class="activity-dot other"></span><strong>Upload a workbook to see recent updates</strong></span>';
+        return;
+      }
+
+      const today = new Date();
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const formatAge = date => {
+        const days = Math.max(0, Math.floor((todayDate - date) / 86400000));
+        if (days === 0) return 'Today';
+        if (days === 1) return '1 day ago';
+        if (days < 7) return `${days} days ago`;
+        if (days < 30) return `${Math.floor(days / 7)} wk ago`;
+        return `${Math.floor(days / 30)} mo ago`;
+      };
+      const escapeActivityText = value => String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[character]));
+      ticker.innerHTML = activities.map((item, index) => {
+        const serial = escapeActivityText(toText(getField(item.row, COLUMNS.serial)) || '?');
+        const reason = escapeActivityText(toText(getField(item.row, COLUMNS.description))
+          || toText(getField(item.row, COLUMNS.classification))
+          || 'Record update');
+        const status = escapeActivityText(item.label);
+        return `<span class="activity-item${index === 0 ? ' is-active' : ''}">
+          <span class="activity-dot ${item.status}"></span>
+          <strong>Issue #${serial} · ${reason}</strong>
+          <span class="activity-status">${status}</span>
+          <span class="activity-age">- ${formatAge(item.date)}</span>
+        </span>`;
+      }).join('');
+
+      if (activities.length > 1) {
+        let activeIndex = 0;
+        activityTimer = setInterval(() => {
+          const items = ticker.querySelectorAll('.activity-item');
+          items[activeIndex].classList.remove('is-active');
+          activeIndex = (activeIndex + 1) % items.length;
+          items[activeIndex].classList.add('is-active');
+        }, 3800);
+      }
+    }
+
     // Groups a raw status string into one of four buckets used for
     // the KPI cards, donut chart and table tag colouring.
     function statusBucket(rawStatus) {
@@ -3387,6 +3677,8 @@
       statusChartTimer = null;
       clearInterval(gaugeChartTimer);
       gaugeChartTimer = null;
+      clearInterval(activityTimer);
+      activityTimer = null;
       setClassificationChartView('bars');
       setStatusChartView('donut');
       setGaugeChartView('donut');
@@ -3695,6 +3987,8 @@
       renderGauge(totalRaised, totalResolved);
       renderBars();
       renderTimeline();
+      renderResolutionSpeed();
+      renderRecentActivity();
       if (allRows.length) {
         startStatusChartRotation('donut');
         startClassificationChartRotation('bars');
