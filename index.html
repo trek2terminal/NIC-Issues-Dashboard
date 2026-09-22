@@ -24,7 +24,40 @@
       content: '';
       display: block;
       height: 3px;
-      background: linear-gradient(90deg, #277cf0 0 72%, #a8d83e 72% 100%);
+      background: linear-gradient(90deg, #f47820 0 9%, #1b73b6 9% 72%, #2eb8e7 72% 100%);
+      opacity: .95;
+    }
+
+    html::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(950px 500px at 92% -12%, color-mix(in srgb, var(--ref-blue) 11%, transparent), transparent 64%),
+        radial-gradient(800px 430px at -12% 8%, color-mix(in srgb, var(--ref-teal) 6%, transparent), transparent 66%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .22;
+      background-image:
+        linear-gradient(color-mix(in srgb, var(--ref-border) 16%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--ref-border) 12%, transparent) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .32), transparent 52%);
+    }
+
+    .top,
+    .welcome,
+    .dashboard {
+      position: relative;
+      z-index: 1;
     }
 
     /* ---------- Header ---------- */
