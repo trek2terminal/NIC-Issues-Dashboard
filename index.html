@@ -125,6 +125,36 @@
       margin-left: auto;
     }
 
+    .header-action {
+      min-width: 38px;
+      min-height: 34px;
+      padding: 8px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border-radius: 9px;
+    }
+
+    .header-action svg {
+      flex: none;
+    }
+
+    .header-upload {
+      padding-inline: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .top-actions {
+        gap: 5px;
+      }
+
+      .header-upload {
+        padding-inline: 10px;
+        font-size: 0;
+      }
+    }
+
     .file-chip {
       display: none;
       align-items: center;
@@ -423,6 +453,91 @@
 
     .refresh-dialog.show .refresh-card {
       transform: none;
+    }
+
+    .page-refresh-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 230;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: color-mix(in srgb, var(--ref-bg) 72%, transparent);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .page-refresh-dialog.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .page-refresh-card {
+      width: min(525px, 100%);
+      border: 1px solid color-mix(in srgb, var(--ref-warn) 45%, var(--ref-border));
+      border-radius: 16px;
+      background: var(--ref-surface);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .32);
+      padding: 26px 28px 24px;
+      transform: translateY(12px) scale(.97);
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .page-refresh-dialog.show .page-refresh-card {
+      transform: none;
+    }
+
+    .page-refresh-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--ref-warn) 28%, var(--ref-border));
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--ref-warn) 12%, var(--ref-surface2));
+      color: var(--ref-warn);
+    }
+
+    .page-refresh-card h2 {
+      margin: 18px 0 8px;
+      color: var(--ref-text);
+      font-family: 'Space Grotesk', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+      font-size: 22px;
+    }
+
+    .page-refresh-card p {
+      max-width: 440px;
+      margin: 0;
+      color: var(--ref-text2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .page-refresh-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 540px) {
+      .page-refresh-card {
+        padding: 22px;
+      }
+
+      .page-refresh-card h2 {
+        font-size: 19px;
+      }
+
+      .page-refresh-actions {
+        flex-direction: column-reverse;
+      }
+
+      .page-refresh-actions .btn {
+        width: 100%;
+      }
     }
 
     .refresh-icon {
@@ -885,6 +1000,95 @@
       background: #ffffff;
     }
 
+    .gauge-stage {
+      position: relative;
+      min-height: 182px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .gauge-view {
+      grid-area: 1 / 1;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1), filter .55s ease, visibility 0s linear 0s;
+      will-change: opacity, transform, filter;
+    }
+
+    .gauge-view.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(12px) scale(.94);
+      filter: blur(4px);
+      transition: opacity .35s ease, transform .35s cubic-bezier(.2, .8, .2, 1), filter .35s ease, visibility 0s linear .35s;
+    }
+
+    .gauge-bars-view {
+      display: flex;
+      width: min(230px, 100%);
+      align-items: end;
+      justify-content: center;
+      gap: 24px;
+      height: 150px;
+      padding: 18px 12px 28px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-12px) scale(.94);
+      filter: blur(4px);
+    }
+
+    .gauge-bars-view.is-active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      filter: none;
+    }
+
+    .gauge-bar-group {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: end;
+      gap: 6px;
+      height: 100%;
+      min-width: 64px;
+    }
+
+    .gauge-bar {
+      width: 34px;
+      min-height: 4px;
+      border-radius: 6px 6px 2px 2px;
+      background: var(--ref-blue);
+      transform-origin: bottom;
+      animation: gaugeBarRise .6s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .gauge-bar.resolved {
+      background: var(--ref-teal);
+      animation-delay: 90ms;
+    }
+
+    .gauge-bar-group strong {
+      color: var(--ref-text);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .gauge-bar-group span {
+      color: var(--ref-muted);
+      font-size: 9px;
+    }
+
+    @keyframes gaugeBarRise {
+      from { opacity: 0; transform: scaleY(0); }
+      to { opacity: 1; transform: scaleY(1); }
+    }
+
     .gauge div {
       position: absolute;
       z-index: 1;
@@ -1048,6 +1252,25 @@
       max-width: 260px;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .skeleton-row td {
+      position: relative;
+      overflow: hidden;
+      background: var(--ref-surface2);
+    }
+
+    .skeleton-row td::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ref-border) 60%, transparent), transparent);
+      animation: skeletonShine 1.3s ease-in-out infinite;
+    }
+
+    @keyframes skeletonShine {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
     }
 
     .class-dot {
@@ -1801,6 +2024,14 @@
       margin-bottom: 0;
     }
 
+    .gauge-caption {
+      margin: 7px 0 0;
+      color: var(--ref-muted);
+      font-size: 10px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
     .chart-cycle-controls {
       display: flex;
       align-items: center;
@@ -1843,24 +2074,6 @@
     }
 
     .chart-cycle-button.auto.is-active {
-    .skeleton-row td {
-      position: relative;
-      overflow: hidden;
-      background: var(--ref-surface2);
-    }
-
-    .skeleton-row td::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ref-border) 60%, transparent), transparent);
-      animation: skeletonShine 1.3s ease-in-out infinite;
-    }
-
-    @keyframes skeletonShine {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(100%); }
-    }
       border-color: color-mix(in srgb, var(--ref-teal) 45%, var(--ref-border));
       background: color-mix(in srgb, var(--ref-teal) 10%, var(--ref-surface2));
       color: var(--ref-teal);
@@ -1878,14 +2091,17 @@
       inset: 0;
       visibility: hidden;
       opacity: 0;
-      transform: translateY(10px) scale(.98);
-      transition: opacity .65s cubic-bezier(.2, .8, .2, 1), transform .65s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .65s;
+      transform: translateY(14px) scale(.97);
+      filter: blur(4px);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1), filter .55s ease, visibility 0s linear .55s;
+      will-change: opacity, transform, filter;
     }
 
     .classification-view.is-active {
       visibility: visible;
       opacity: 1;
       transform: none;
+      filter: none;
       transition-delay: 0s;
     }
 
@@ -1980,14 +2196,17 @@
       inset: 0;
       visibility: hidden;
       opacity: 0;
-      transform: translateY(10px) scale(.98);
-      transition: opacity .65s cubic-bezier(.2, .8, .2, 1), transform .65s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .65s;
+      transform: translateY(14px) scale(.97);
+      filter: blur(4px);
+      transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1), filter .55s ease, visibility 0s linear .55s;
+      will-change: opacity, transform, filter;
     }
 
     .status-chart-view.is-active {
       visibility: visible;
       opacity: 1;
       transform: none;
+      filter: none;
       transition-delay: 0s;
     }
 
@@ -2257,7 +2476,10 @@
         <span class="dot"></span>
         <strong id="headerFileName">No workbook loaded</strong>
       </div>
-      <button id="themeToggle" class="btn icon-only theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+      <button id="themeToggle" class="btn icon-only theme-toggle header-action" type="button" aria-label="Switch to dark theme" title="Switch to dark theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+      <button id="headerRefreshBtn" class="btn icon-only header-action" type="button" aria-label="Refresh dashboard" title="Refresh dashboard"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 00-14.8-4L3 10"/><path d="M3 4v6h6"/><path d="M4 13a8.1 8.1 0 0014.8 4L21 14"/><path d="M21 20v-6h-6"/></svg></button>
+      <button id="headerPdfBtn" class="btn header-action" type="button" aria-label="Print or save dashboard as PDF" title="Print or save dashboard as PDF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>PDF</span></button>
+      <button id="headerUploadBtn" class="btn btn-primary header-action header-upload" type="button" aria-label="Upload Excel workbook" title="Upload Excel workbook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/></svg><span>Upload Excel</span></button>
     </div>
   </header>
 
@@ -2360,12 +2582,22 @@
       </article>
 
       <article class="box">
-        <h2>Reported vs Resolved</h2>
-        <div id="gauge" class="gauge">
-          <div>
-            <b id="percent">0%</b>
-            <small id="ratio">0 / 0</small>
+        <div class="chart-panel-head">
+          <h2>Reported vs Resolved</h2>
+          <div class="chart-cycle-controls" aria-label="Reported versus resolved chart controls">
+            <button class="chart-cycle-button is-active" type="button" data-gauge-chart-view="donut">Donut</button>
+            <button class="chart-cycle-button" type="button" data-gauge-chart-view="bars">Bars</button>
           </div>
+        </div>
+        <p class="gauge-caption">A quick view of reported volume against resolved work.</p>
+        <div class="gauge-stage">
+          <div id="gauge" class="gauge gauge-view">
+            <div>
+              <b id="percent">0%</b>
+              <small id="ratio">0 / 0</small>
+            </div>
+          </div>
+          <div id="gaugeBarsView" class="gauge-bars-view gauge-view" aria-hidden="true"></div>
         </div>
       </article>
 
@@ -2455,6 +2687,18 @@
     </div>
   </div>
 
+  <div class="page-refresh-dialog" id="pageRefreshDialog">
+    <div class="page-refresh-card">
+      <div class="page-refresh-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 00-14.8-4L3 10"/><path d="M3 4v6h6"/><path d="M4 13a8.1 8.1 0 0014.8 4L21 14"/><path d="M21 20v-6h-6"/></svg></div>
+      <h2>Refresh this dashboard?</h2>
+      <p>Your workbook is held in this browser tab only. Refreshing will clear the current view and you will need to upload the Excel file again.</p>
+      <div class="page-refresh-actions">
+        <button class="btn btn-ghost" id="pageRefreshCancel" type="button">Stay here</button>
+        <button class="btn btn-primary" id="pageRefreshConfirm" type="button">Refresh page</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite">
     <div class="toast-icon" id="toastIcon">&#10003;</div>
     <div>
@@ -2474,6 +2718,7 @@
     let uploadBarTimer = null;
     let classificationChartTimer = null;
     let statusChartTimer = null;
+    let gaugeChartTimer = null;
     const PAGE_SIZE = 10;
 
     // The exact column headers used in the source workbook.
@@ -2786,8 +3031,11 @@
       classificationChartTimer = null;
       clearInterval(statusChartTimer);
       statusChartTimer = null;
+      clearInterval(gaugeChartTimer);
+      gaugeChartTimer = null;
       setClassificationChartView('bars');
       setStatusChartView('donut');
+      setGaugeChartView('donut');
       el('dashboardUpload').classList.remove('is-settled');
       document.body.classList.remove('loaded');
       render();
@@ -2810,34 +3058,31 @@
       const totalRaised = allRows.reduce((sum, r) => sum + toNumber(getField(r, COLUMNS.raised)), 0);
       const totalResolved = allRows.reduce((sum, r) => sum + toNumber(getField(r, COLUMNS.resolved)), 0);
       const completedRows = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'completed').length;
-      const pending = Math.max(0, totalRaised - totalResolved);
-      const otherRows = allRows.length - completedRows;
+      const pendingRows = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'pending').length;
+      const otherRows = allRows.filter(r => {
+        const b = statusBucket(getField(r, COLUMNS.status));
+        return b !== 'completed' && b !== 'pending';
+      }).length;
 
       animateCount('kpiRaised', totalRaised);
       animateCount('kpiResolved', totalResolved);
       animateCount('kpiCompleted', completedRows);
-      animateCount('kpiPending', pending);
+      animateCount('kpiPending', pendingRows);
       animateCount('kpiOther', otherRows);
 
       if (!allRows.length) return { totalRaised, totalResolved };
 
       const total = allRows.length || 1;
       const resolvedRate = totalRaised ? Math.round((totalResolved / totalRaised) * 100) : 0;
-      const completedCount = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'completed').length;
-      const pendingCount = allRows.filter(r => statusBucket(getField(r, COLUMNS.status)) === 'pending').length;
-      const otherCount = allRows.filter(r => {
-        const b = statusBucket(getField(r, COLUMNS.status));
-        return b !== 'completed' && b !== 'pending';
-      }).length;
 
       document.querySelector('#kpiResolved').closest('.card').querySelector('small').textContent =
         `Total issues marked as resolved · ${resolvedRate}% resolution rate`;
       document.querySelector('#kpiCompleted').closest('.card').querySelector('small').textContent =
-        `Rows with status marked Completed · ${Math.round((completedCount / total) * 100)}% of records`;
+        `Rows with status marked Completed · ${Math.round((completedRows / total) * 100)}% of records`;
       document.querySelector('#kpiPending').closest('.card').querySelector('small').textContent =
-        `Reported issues not yet resolved · ${Math.round((pendingCount / total) * 100)}% of records`;
+        `Reported issues not yet resolved · ${Math.round((pendingRows / total) * 100)}% of records`;
       document.querySelector('#kpiOther').closest('.card').querySelector('small').textContent =
-        `All remaining field issue statuses · ${Math.round((otherCount / total) * 100)}% of records`;
+        `All remaining field issue statuses · ${Math.round((otherRows / total) * 100)}% of records`;
 
       return { totalRaised, totalResolved };
     }
@@ -2895,6 +3140,27 @@
       el('gauge').style.background = `conic-gradient(#49b95d 0 ${pct}%, #e1e6ec ${pct}% 100%)`;
       el('percent').textContent = `${pct}%`;
       el('ratio').textContent = `${formatNumber(totalResolved)} / ${formatNumber(totalRaised)}`;
+      const barMax = Math.max(totalRaised, totalResolved, 1);
+      el('gaugeBarsView').innerHTML = [
+        ['reported', totalRaised, 'Reported', ''],
+        ['resolved', totalResolved, 'Resolved', 'resolved']
+      ].map(([, value, label, variant]) => `
+        <div class="gauge-bar-group">
+          <strong>${formatNumber(value)}</strong>
+          <div class="gauge-bar ${variant}" style="height:${Math.max(4, (value / barMax) * 100)}%"></div>
+          <span>${label}</span>
+        </div>
+      `).join('');
+    }
+
+    function setGaugeChartView(view) {
+      const showBars = view === 'bars';
+      el('gauge').classList.toggle('is-hidden', showBars);
+      el('gaugeBarsView').classList.toggle('is-active', showBars);
+      el('gaugeBarsView').setAttribute('aria-hidden', String(!showBars));
+      document.querySelectorAll('[data-gauge-chart-view]').forEach(button => {
+        button.classList.toggle('is-active', button.dataset.gaugeChartView === view);
+      });
     }
 
     // ---------------------------------------------------------------
@@ -2997,6 +3263,15 @@
       }, 10000);
     }
 
+    function startGaugeChartRotation(view) {
+      clearInterval(gaugeChartTimer);
+      if (view) setGaugeChartView(view);
+      gaugeChartTimer = setInterval(() => {
+        const nextView = el('gaugeBarsView').classList.contains('is-active') ? 'donut' : 'bars';
+        setGaugeChartView(nextView);
+      }, 10000);
+    }
+
     // ---------------------------------------------------------------
     // Details table (search + status filter + pagination)
     // ---------------------------------------------------------------
@@ -3058,6 +3333,7 @@
       if (allRows.length) {
         startStatusChartRotation('donut');
         startClassificationChartRotation('bars');
+        startGaugeChartRotation('donut');
       }
       applyFilters();
     }
@@ -3239,6 +3515,11 @@
       fileInput.click();
     });
     el('dashboardUploadBtn').addEventListener('click', () => fileInput.click());
+    el('headerUploadBtn').addEventListener('click', () => fileInput.click());
+    el('headerRefreshBtn').addEventListener('click', () => el('pageRefreshDialog').classList.add('show'));
+    el('pageRefreshCancel').addEventListener('click', () => el('pageRefreshDialog').classList.remove('show'));
+    el('pageRefreshConfirm').addEventListener('click', () => window.location.reload());
+    el('headerPdfBtn').addEventListener('click', () => window.print());
     el('uploadZone').addEventListener('click', e => {
       if (!e.target.closest('button')) fileInput.click();
     });
@@ -3262,6 +3543,9 @@
         setStatusChartView(view);
         startStatusChartRotation(view);
       });
+    });
+    document.querySelectorAll('[data-gauge-chart-view]').forEach(button => {
+      button.addEventListener('click', () => startGaugeChartRotation(button.dataset.gaugeChartView));
     });
     el('search').addEventListener('input', applyFilters);
     el('statusFilter').addEventListener('change', applyFilters);
