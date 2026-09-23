@@ -3055,7 +3055,6 @@
             <option value="">All statuses</option>
           </select>
           <label class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg> <input id="search" placeholder="Search records..."></label>
-          <button id="exportBtn" class="btn">Export</button>
         </div>
       </div>
 
@@ -4046,17 +4045,6 @@
       applyFilters();
     }
 
-    // ---------------------------------------------------------------
-    // Export current dataset back to Excel
-    // ---------------------------------------------------------------
-    function exportData() {
-      if (!allRows.length) return;
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(allRows);
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Issue Details');
-      XLSX.writeFile(workbook, 'installation-issue-details.xlsx');
-    }
-
     // Keep the visual theme independent from workbook state.
     function setTheme(isDark) {
       document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
@@ -4260,7 +4248,6 @@
     });
     el('search').addEventListener('input', applyFilters);
     el('statusFilter').addEventListener('change', applyFilters);
-    el('exportBtn').addEventListener('click', exportData);
 
     el('prevPage').addEventListener('click', () => {
       if (currentPage > 1) {
